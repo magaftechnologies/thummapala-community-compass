@@ -47,7 +47,10 @@ export const nav = [
   ["sports", c("Sports", "క్రీడలు")],
   ["opportunities", c("Opportunities", "అవకాశాలు")],
   ["activities", c("Activities", "కార్యక్రమాలు")],
+  ["events", c("Events", "కార్యక్రమాలు")],
   ["stories", c("Stories", "కథలు")],
+  ["gallery", c("Gallery", "ఫోటోలు")],
+  ["contact", c("Contact", "సంప్రదించండి")],
 ] as const;
 export const heroSlides = [
   {

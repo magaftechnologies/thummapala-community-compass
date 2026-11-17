@@ -27,6 +27,9 @@ import {
   Leaf,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   images,
@@ -118,8 +121,8 @@ function Navbar({
           <div className="nav-actions">
             <LanguageSwitch lang={lang} setLang={setLang} />
             <Button asChild variant="editorial" className="nav-explore">
-              <a href="#village">
-                {t(c("Explore Thummapala", "మన ఊరిని చూడండి"))}
+              <a href="#contact">
+                {t(c("Join our journey", "మన ప్రయాణంలో భాగమవ్వండి"))}
                 <ArrowUpRight />
               </a>
             </Button>
@@ -224,6 +227,14 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
         </Button>
       </div>
       <span className="photo-credit">{t(imageMetadata.caption)}</span>
+      <div className="hero-stats container-wide" aria-label={t(c("Village figures · 2011 Census", "గ్రామ వివరాలు · 2011 జనగణన"))}>
+        {facts.map((fact) => (
+          <div className="hero-stat" key={fact.label.en}>
+            <strong><Counter value={fact.value} /></strong>
+            <span>{t(fact.label)}</span>
+          </div>
+        ))}
+      </div>
       <a href="#village" className="hero-scroll text-primary-foreground">
         <ArrowDown size={13} />
         {t(c("SCROLL TO DISCOVER", "మరింత తెలుసుకోండి"))}
@@ -362,6 +373,42 @@ function Counter({ value }: { value: number }) {
   }, [value]);
   return <span ref={ref}>{count.toLocaleString("en-IN")}</span>;
 }
+function ChapterProgress({ t }: { t: Translate }) {
+  const [active, setActive] = useState("village");
+  useEffect(() => {
+    const sections = ["village", "education", "opportunities", "agrotech", "sports", "events", "future", "contact"]
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) setActive(visible.target.id);
+      },
+      { rootMargin: "-25% 0px -55% 0px", threshold: [0, 0.25, 0.5] },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+  const chapters = [
+    ["village", c("Village", "మన ఊరు")],
+    ["education", c("Education", "చదువు")],
+    ["opportunities", c("Opportunity", "అవకాశాలు")],
+    ["agrotech", c("Agrotech", "వ్యవసాయం")],
+    ["sports", c("Sports", "క్రీడలు")],
+    ["events", c("Community", "మనవాళ్లు")],
+    ["future", c("Future", "భవిష్యత్తు")],
+    ["contact", c("Connect", "కలవండి")],
+  ] as const;
+  return (
+    <nav className="chapter-progress" aria-label={t(c("Story chapters", "కథా అధ్యాయాలు"))}>
+      {chapters.map(([id, label], index) => (
+        <a key={id} href={`#${id}`} aria-current={active === id ? "location" : undefined}>
+          <span>0{index + 1}</span><span>{t(label)}</span>
+        </a>
+      ))}
+    </nav>
+  );
+}
 function Village({ t }: { t: Translate }) {
   return (
     <section id="village" className="section container-wide">
@@ -407,16 +454,6 @@ function Village({ t }: { t: Translate }) {
             {t(c("Get to know our village", "మన ఊరిని తెలుసుకోండి"))}
           </TextLink>
         </div>
-      </div>
-      <div className="stats">
-        {facts.map((f) => (
-          <div className="stat" key={f.value}>
-            <strong>
-              <Counter value={f.value} />
-            </strong>
-            <p>{t(f.label)}</p>
-          </div>
-        ))}
       </div>
       <p className="data-note">
         {t(
@@ -1352,6 +1389,113 @@ function Location({ t }: { t: Translate }) {
     </section>
   );
 }
+function Enquiry({ t }: { t: Translate }) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [sending, setSending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    const name = String(fields.get("name") ?? "").trim();
+    const phone = String(fields.get("phone") ?? "").trim();
+    const email = String(fields.get("email") ?? "").trim();
+    const audience = String(fields.get("audience") ?? "");
+    const interest = String(fields.get("interest") ?? "");
+    const message = String(fields.get("message") ?? "").trim();
+    const nextErrors: Record<string, string> = {};
+    if (!name) nextErrors.name = t(c("Please enter your name.", "దయచేసి మీ పేరు నమోదు చేయండి."));
+    if (!/^\+?[\d\s().-]+$/.test(phone) || phone.replace(/\D/g, "").length < 8 || phone.replace(/\D/g, "").length > 15) {
+      nextErrors.phone = t(c("Enter a valid phone number (8–15 digits).", "సరైన ఫోన్ నంబర్ నమోదు చేయండి (8–15 అంకెలు)."));
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      nextErrors.email = t(c("Enter a valid email address.", "సరైన ఇమెయిల్ చిరునామా నమోదు చేయండి."));
+    }
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+    setSending(true);
+    window.setTimeout(() => {
+      setSending(false);
+      setSubmitted(true);
+    }, 450);
+  };
+  const reset = () => {
+    formRef.current?.reset();
+    setErrors({});
+    setSubmitted(false);
+  };
+  return (
+    <section id="contact" className="section enquiry-section">
+      <div className="container-wide enquiry-layout">
+        <div className="enquiry-intro">
+          <p className="eyebrow">{t(c("CHAPTER 08 · CONNECT", "అధ్యాయం 08 · కలవండి"))}</p>
+          <h2 className="section-title">{t(c("Be part of Thummapala’s journey.", "తుమ్మపాల ప్రయాణంలో భాగమవ్వండి."))}</h2>
+          <p className="section-copy">{t(c("Have a question, want to support a programme, share an opportunity, or connect with the community? We’d love to hear from you.", "ఏదైనా అడగాలనుకుంటున్నారా, కార్యక్రమానికి తోడ్పడాలనుకుంటున్నారా, అవకాశం పంచుకోవాలనుకుంటున్నారా? మన కమ్యూనిటీతో మీ అనుబంధాన్ని ప్రారంభించండి."))}</p>
+          <span className="enquiry-mark" aria-hidden="true"><Sprout strokeWidth={1} /></span>
+        </div>
+        <form className="enquiry-form" ref={formRef} onSubmit={submit} noValidate>
+          {submitted ? (
+            <div className="enquiry-success" role="status" aria-live="polite">
+              <span className="enquiry-success-icon"><ArrowUpRight /></span>
+              <p className="eyebrow">{t(c("THANK YOU FOR CONNECTING", "మాతో కలిసినందుకు ధన్యవాదాలు"))}</p>
+              <h3>{t(c("Your message is ready.", "మీ సందేశం సిద్ధంగా ఉంది."))}</h3>
+              <p>{t(c("This is a front-end preview, so your enquiry has not been sent or saved. A live contact service can be connected after review.", "ఇది వెబ్‌సైట్ నమూనా మాత్రమే. మీ సందేశం పంపబడలేదు లేదా భద్రపరచబడలేదు. సమీక్ష తర్వాత నిజమైన సంప్రదింపు సేవను అనుసంధానించవచ్చు."))}</p>
+              <Button type="button" variant="editorial" className="enquiry-reset" onClick={reset}>{t(c("Send another message", "మరో సందేశం పంపండి"))}<ArrowRight /></Button>
+            </div>
+          ) : (
+            <>
+              <div className="enquiry-form-heading">
+                <span>01 — {t(c("YOUR DETAILS", "మీ వివరాలు"))}</span>
+                <span>{t(c("All fields required", "అన్ని వివరాలు తప్పనిసరి"))}</span>
+              </div>
+              <div className="enquiry-fields">
+                <div className="enquiry-field">
+                  <Label htmlFor="enquiry-name">{t(c("Full name", "పూర్తి పేరు"))}</Label>
+                  <Input id="enquiry-name" name="name" autoComplete="name" required aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "enquiry-name-error" : undefined} placeholder={t(c("Your name", "మీ పేరు"))} />
+                  {errors.name && <span className="enquiry-error" id="enquiry-name-error">{errors.name}</span>}
+                </div>
+                <div className="enquiry-field">
+                  <Label htmlFor="enquiry-phone">{t(c("Phone number", "ఫోన్ నంబర్"))}</Label>
+                  <Input id="enquiry-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" required aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "enquiry-phone-error" : undefined} placeholder={t(c("+91 00000 00000", "+91 00000 00000"))} />
+                  {errors.phone && <span className="enquiry-error" id="enquiry-phone-error">{errors.phone}</span>}
+                </div>
+                <div className="enquiry-field enquiry-field-wide">
+                  <Label htmlFor="enquiry-email">{t(c("Email address", "ఇమెయిల్ చిరునామా"))}</Label>
+                  <Input id="enquiry-email" name="email" type="email" autoComplete="email" required aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "enquiry-email-error" : undefined} placeholder={t(c("you@example.com", "you@example.com"))} />
+                  {errors.email && <span className="enquiry-error" id="enquiry-email-error">{errors.email}</span>}
+                </div>
+                <div className="enquiry-field">
+                  <Label htmlFor="enquiry-audience">{t(c("I am a…", "నేను…"))}</Label>
+                  <select className="enquiry-select" id="enquiry-audience" name="audience" required defaultValue="">
+                    <option value="" disabled>{t(c("Choose one", "ఒకటి ఎంచుకోండి"))}</option>
+                    {[c("Student", "విద్యార్థి"), c("Parent", "తల్లిదండ్రులు"), c("Farmer", "రైతు"), c("Player", "క్రీడాకారుడు"), c("Mentor", "మార్గదర్శి"), c("Volunteer", "వాలంటీర్"), c("Community member", "కమ్యూనిటీ సభ్యుడు"), c("Other", "ఇతరులు")].map((option) => <option value={option.en} key={option.en}>{t(option)}</option>)}
+                  </select>
+                </div>
+                <div className="enquiry-field">
+                  <Label htmlFor="enquiry-interest">{t(c("Interested in…", "ఆసక్తి ఉన్నది…"))}</Label>
+                  <select className="enquiry-select" id="enquiry-interest" name="interest" required defaultValue="">
+                    <option value="" disabled>{t(c("Choose a topic", "విషయం ఎంచుకోండి"))}</option>
+                    {[c("Education", "చదువు"), c("Career", "ఉద్యోగం"), c("Agriculture", "వ్యవసాయం"), c("Sports", "క్రీడలు"), c("Training", "శిక్షణ"), c("Community programmes", "కమ్యూనిటీ కార్యక్రమాలు"), c("Other", "ఇతర అంశం")].map((option) => <option value={option.en} key={option.en}>{t(option)}</option>)}
+                  </select>
+                </div>
+                <div className="enquiry-field enquiry-field-wide">
+                  <Label htmlFor="enquiry-message">{t(c("Your message", "మీ సందేశం"))}</Label>
+                  <Textarea id="enquiry-message" name="message" required rows={3} placeholder={t(c("How would you like to be involved?", "మీరు ఎలా భాగస్వాములు కావాలనుకుంటున్నారు?"))} />
+                </div>
+              </div>
+              <div className="enquiry-submit-row">
+                <p>{t(c("Front-end preview · Messages are not transmitted or stored.", "వెబ్‌సైట్ నమూనా · సందేశాలు పంపబడవు లేదా భద్రపరచబడవు."))}</p>
+                <Button type="submit" className="enquiry-submit" disabled={sending}>{sending ? t(c("Preparing…", "సిద్ధం చేస్తున్నాం…")) : t(c("Send enquiry", "సందేశం పంపండి"))}<ArrowUpRight /></Button>
+              </div>
+              {errors.form && <span className="enquiry-error" role="alert">{errors.form}</span>}
+            </>
+          )}
+        </form>
+      </div>
+    </section>
+  );
+}
 function Community({ t, open }: { t: Translate; open: Open }) {
   return (
     <section id="community" className="community container-wide">
@@ -1611,6 +1755,7 @@ export function VillageExperience() {
       <Navbar t={t} lang={lang} setLang={setLang} />
       <main>
         <Hero t={t} lang={lang} />
+        <ChapterProgress t={t} />
         <Village t={t} />
         <Pillars t={t} />
         <Education t={t} open={open} />
@@ -1630,6 +1775,7 @@ export function VillageExperience() {
           }}
         />
         <Location t={t} />
+        <Enquiry t={t} />
         <Community t={t} open={open} />
       </main>
       <Footer t={t} open={open} />
