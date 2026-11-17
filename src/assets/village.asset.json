@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "f9a9dee7-00a9-489c-9150-6b8384023d94",
-  "project_id": "84ceb01f-c69a-4789-a8df-3d395f9ec61a",
-  "url": "/__l5e/assets-v1/f9a9dee7-00a9-489c-9150-6b8384023d94/thummapala-village.jpg",
-  "r2_key": "a/v1/84ceb01f-c69a-4789-a8df-3d395f9ec61a/f9a9dee7-00a9-489c-9150-6b8384023d94/thummapala-village.jpg",
-  "original_filename": "thummapala-village.jpg",
-  "size": 548572,
   "content_type": "image/jpeg",
-  "created_at": "2026-11-17T19:56:13Z"
+  "created_at": "2026-11-17T19:56:13Z",
+  "original_filename": "thummapala-village.jpg",
+  "project_id": "fe5c3bc9-902e-43ee-ac65-b19c228854fd",
+  "r2_key": "a/v1/fe5c3bc9-902e-43ee-ac65-b19c228854fd/f9a9dee7-00a9-489c-9150-6b8384023d94/thummapala-village.jpg",
+  "size": 548572,
+  "url": "/__l5e/assets-v1/f9a9dee7-00a9-489c-9150-6b8384023d94/thummapala-village.jpg",
+  "version": 1
 }
