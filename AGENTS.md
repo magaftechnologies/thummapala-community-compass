@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application architecture
+- Keep this frontend demo as one index route with in-page section navigation; the brief explicitly requires one continuous story.
+- Store bilingual content, demo flags, verification flags, and CDN image pointers in a central browser-safe data module so client content can replace samples without changing layouts.
+- Use shared accessible controls, Embla for swipe carousels, and Radix dialogs for detail views; interactions remain client-only without persistence or backend services.
