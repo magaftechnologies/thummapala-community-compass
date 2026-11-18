@@ -2259,3 +2259,15 @@ body { background: var(--paper); }
 .ref-learning .program p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .ref-learning .mentor-band { display: none; }
 @media (max-width: 600px) { .ref-learning .programs { grid-template-columns: 1fr; } }
+/* Fixes for colored panels */
+.ref-focus #sports .sport-item, .ref-focus #sports .sport-item strong, .ref-focus #sports .sport-item span, .ref-focus #sports .data-note, .ref-focus #sports .sport-item svg, .ref-focus #sports button { color: var(--primary-foreground) !important; border-color: color-mix(in oklab, var(--primary-foreground) 30%, transparent); }
+.ref-focus #sports .carousel-controls button { background: transparent; }
+.ref-focus #sports .eyebrow, .ref-focus #sports .telugu-line, .ref-focus #sports .photo-caption { color: var(--sunrise) !important; }
+.ref-focus #agrotech .initiative p, .ref-focus #agrotech .sample, .ref-focus #future .future-item button { color: color-mix(in oklab, var(--primary-foreground) 75%, transparent); }
+.ref-focus #future .telugu-line { color: var(--sunrise); }
+.ref-community #events .event-info p, .ref-community #events .status, .ref-community #events .sample, .ref-community #events button, .ref-community #events .filters button { color: var(--primary-foreground); }
+.ref-community #events .eyebrow { color: var(--sunrise) !important; }
+.reference-home > .announcement-band { position: relative; }
+.reference-home > .announcement-band .announcement-label { position: relative; z-index: 2; background: var(--forest-deep); padding-right: 20px; padding-left: 28px; }
+.ref-focus { align-items: start; }
+.ref-community #events .carousel-controls button, .ref-focus .carousel-controls button { background: transparent; color: var(--primary-foreground); border-color: color-mix(in oklab, var(--primary-foreground) 45%, transparent); }
