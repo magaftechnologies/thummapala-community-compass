@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { validateEnquiry, type EnquiryField, type EnquiryIssue, type EnquiryValues } from "@/lib/enquiry-validation";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   images,
@@ -1391,7 +1392,7 @@ function Location({ t }: { t: Translate }) {
 }
 function Enquiry({ t }: { t: Translate }) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<EnquiryField, EnquiryIssue>>>({});
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -1404,14 +1405,8 @@ function Enquiry({ t }: { t: Translate }) {
     const audience = String(fields.get("audience") ?? "");
     const interest = String(fields.get("interest") ?? "");
     const message = String(fields.get("message") ?? "").trim();
-    const nextErrors: Record<string, string> = {};
-    if (!name) nextErrors.name = t(c("Please enter your name.", "దయచేసి మీ పేరు నమోదు చేయండి."));
-    if (!/^\+?[\d\s().-]+$/.test(phone) || phone.replace(/\D/g, "").length < 8 || phone.replace(/\D/g, "").length > 15) {
-      nextErrors.phone = t(c("Enter a valid phone number (8–15 digits).", "సరైన ఫోన్ నంబర్ నమోదు చేయండి (8–15 అంకెలు)."));
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      nextErrors.email = t(c("Enter a valid email address.", "సరైన ఇమెయిల్ చిరునామా నమోదు చేయండి."));
-    }
+    const values: EnquiryValues = { name, phone, email, audience, interest, message };
+    const nextErrors = validateEnquiry(values);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
     setSending(true);
@@ -1424,6 +1419,12 @@ function Enquiry({ t }: { t: Translate }) {
     formRef.current?.reset();
     setErrors({});
     setSubmitted(false);
+  };
+  const errorText = (issue: EnquiryIssue | undefined) => {
+    if (issue === "required") return t(c("This field is required.", "ఈ వివరాన్ని తప్పనిసరిగా నమోదు చేయండి."));
+    if (issue === "phone") return t(c("Enter a valid phone number (8–15 digits).", "సరైన ఫోన్ నంబర్ నమోదు చేయండి (8–15 అంకెలు)."));
+    if (issue === "email") return t(c("Enter a valid email address.", "సరైన ఇమెయిల్ చిరునామా నమోదు చేయండి."));
+    return "";
   };
   return (
     <section id="contact" className="section enquiry-section">
@@ -1453,17 +1454,17 @@ function Enquiry({ t }: { t: Translate }) {
                 <div className="enquiry-field">
                   <Label htmlFor="enquiry-name">{t(c("Full name", "పూర్తి పేరు"))}</Label>
                   <Input id="enquiry-name" name="name" autoComplete="name" required aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "enquiry-name-error" : undefined} placeholder={t(c("Your name", "మీ పేరు"))} />
-                  {errors.name && <span className="enquiry-error" id="enquiry-name-error">{errors.name}</span>}
+                  {errors.name && <span className="enquiry-error" id="enquiry-name-error">{errorText(errors.name)}</span>}
                 </div>
                 <div className="enquiry-field">
                   <Label htmlFor="enquiry-phone">{t(c("Phone number", "ఫోన్ నంబర్"))}</Label>
                   <Input id="enquiry-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" required aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "enquiry-phone-error" : undefined} placeholder={t(c("+91 00000 00000", "+91 00000 00000"))} />
-                  {errors.phone && <span className="enquiry-error" id="enquiry-phone-error">{errors.phone}</span>}
+                  {errors.phone && <span className="enquiry-error" id="enquiry-phone-error">{errorText(errors.phone)}</span>}
                 </div>
                 <div className="enquiry-field enquiry-field-wide">
                   <Label htmlFor="enquiry-email">{t(c("Email address", "ఇమెయిల్ చిరునామా"))}</Label>
                   <Input id="enquiry-email" name="email" type="email" autoComplete="email" required aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "enquiry-email-error" : undefined} placeholder={t(c("you@example.com", "you@example.com"))} />
-                  {errors.email && <span className="enquiry-error" id="enquiry-email-error">{errors.email}</span>}
+                  {errors.email && <span className="enquiry-error" id="enquiry-email-error">{errorText(errors.email)}</span>}
                 </div>
                 <div className="enquiry-field">
                   <Label htmlFor="enquiry-audience">{t(c("I am a…", "నేను…"))}</Label>
@@ -1471,6 +1472,7 @@ function Enquiry({ t }: { t: Translate }) {
                     <option value="" disabled>{t(c("Choose one", "ఒకటి ఎంచుకోండి"))}</option>
                     {[c("Student", "విద్యార్థి"), c("Parent", "తల్లిదండ్రులు"), c("Farmer", "రైతు"), c("Player", "క్రీడాకారుడు"), c("Mentor", "మార్గదర్శి"), c("Volunteer", "వాలంటీర్"), c("Community member", "కమ్యూనిటీ సభ్యుడు"), c("Other", "ఇతరులు")].map((option) => <option value={option.en} key={option.en}>{t(option)}</option>)}
                   </select>
+                  {errors.audience && <span className="enquiry-error">{errorText(errors.audience)}</span>}
                 </div>
                 <div className="enquiry-field">
                   <Label htmlFor="enquiry-interest">{t(c("Interested in…", "ఆసక్తి ఉన్నది…"))}</Label>
@@ -1478,17 +1480,18 @@ function Enquiry({ t }: { t: Translate }) {
                     <option value="" disabled>{t(c("Choose a topic", "విషయం ఎంచుకోండి"))}</option>
                     {[c("Education", "చదువు"), c("Career", "ఉద్యోగం"), c("Agriculture", "వ్యవసాయం"), c("Sports", "క్రీడలు"), c("Training", "శిక్షణ"), c("Community programmes", "కమ్యూనిటీ కార్యక్రమాలు"), c("Other", "ఇతర అంశం")].map((option) => <option value={option.en} key={option.en}>{t(option)}</option>)}
                   </select>
+                  {errors.interest && <span className="enquiry-error">{errorText(errors.interest)}</span>}
                 </div>
                 <div className="enquiry-field enquiry-field-wide">
                   <Label htmlFor="enquiry-message">{t(c("Your message", "మీ సందేశం"))}</Label>
-                  <Textarea id="enquiry-message" name="message" required rows={3} placeholder={t(c("How would you like to be involved?", "మీరు ఎలా భాగస్వాములు కావాలనుకుంటున్నారు?"))} />
+                  <Textarea id="enquiry-message" name="message" required rows={3} aria-invalid={Boolean(errors.message)} placeholder={t(c("How would you like to be involved?", "మీరు ఎలా భాగస్వాములు కావాలనుకుంటున్నారు?"))} />
+                  {errors.message && <span className="enquiry-error">{errorText(errors.message)}</span>}
                 </div>
               </div>
               <div className="enquiry-submit-row">
                 <p>{t(c("Front-end preview · Messages are not transmitted or stored.", "వెబ్‌సైట్ నమూనా · సందేశాలు పంపబడవు లేదా భద్రపరచబడవు."))}</p>
                 <Button type="submit" className="enquiry-submit" disabled={sending}>{sending ? t(c("Preparing…", "సిద్ధం చేస్తున్నాం…")) : t(c("Send enquiry", "సందేశం పంపండి"))}<ArrowUpRight /></Button>
               </div>
-              {errors.form && <span className="enquiry-error" role="alert">{errors.form}</span>}
             </>
           )}
         </form>
