@@ -477,3 +477,5 @@ img { display: block; max-width: 100%; }
   html { scroll-behavior: auto; }
   *, *:before, *:after { animation: none !important; transition: none !important; }
 }
+.impact-stat strong span { display: inline; margin: 0; font-size: inherit; color: inherit; }
+.telugu-line + .section-copy, .telugu-line + p { margin-top: var(--s-2); }

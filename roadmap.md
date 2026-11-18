@@ -5,3 +5,5 @@
 - [x] Recommend the next step after remixing: review the preview, then replace samples with verified community content.
 - [x] Rebuild the existing page to follow the newly supplied cinematic reference, including an accessible, validated bilingual enquiry form; verify desktop, mobile, and form states.- [ ] Match the page layout closely to the uploaded reference image (compact side-by-side sections, icon stats, hero chapter list).
 - [x] Recommend next step after remix (again).
+- [x] Rebuild layout per "critical design correction" brief: one container/grid/type scale, hero in normal flow, stats strip separate, story order, no overlaps; QA at 1440/1280/1024/768/390/360.
+- [x] Recommend next step after remix (third ask).
