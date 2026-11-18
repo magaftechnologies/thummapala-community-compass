@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActivitiesRouteImport } from './routes/activities'
+import { Route as AgrotechRouteImport } from './routes/agrotech'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EducationRouteImport } from './routes/education'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as OpportunitiesRouteImport } from './routes/opportunities'
+import { Route as OurVillageRouteImport } from './routes/our-village'
+import { Route as SportsRouteImport } from './routes/sports'
+import { Route as StoriesRouteImport } from './routes/stories'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivitiesRoute = ActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgrotechRoute = AgrotechRouteImport.update({
+  id: '/agrotech',
+  path: '/agrotech',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationRoute = EducationRouteImport.update({
+  id: '/education',
+  path: '/education',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesRoute = OpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurVillageRoute = OurVillageRouteImport.update({
+  id: '/our-village',
+  path: '/our-village',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SportsRoute = SportsRouteImport.update({
+  id: '/sports',
+  path: '/sports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoriesRoute = StoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/agrotech': typeof AgrotechRoute
+  '/contact': typeof ContactRoute
+  '/education': typeof EducationRoute
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/our-village': typeof OurVillageRoute
+  '/sports': typeof SportsRoute
+  '/stories': typeof StoriesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/agrotech': typeof AgrotechRoute
+  '/contact': typeof ContactRoute
+  '/education': typeof EducationRoute
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/our-village': typeof OurVillageRoute
+  '/sports': typeof SportsRoute
+  '/stories': typeof StoriesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/agrotech': typeof AgrotechRoute
+  '/contact': typeof ContactRoute
+  '/education': typeof EducationRoute
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/our-village': typeof OurVillageRoute
+  '/sports': typeof SportsRoute
+  '/stories': typeof StoriesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/activities'
+    | '/agrotech'
+    | '/contact'
+    | '/education'
+    | '/events'
+    | '/gallery'
+    | '/opportunities'
+    | '/our-village'
+    | '/sports'
+    | '/stories'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/activities'
+    | '/agrotech'
+    | '/contact'
+    | '/education'
+    | '/events'
+    | '/gallery'
+    | '/opportunities'
+    | '/our-village'
+    | '/sports'
+    | '/stories'
+  id:
+    | '__root__'
+    | '/'
+    | '/activities'
+    | '/agrotech'
+    | '/contact'
+    | '/education'
+    | '/events'
+    | '/gallery'
+    | '/opportunities'
+    | '/our-village'
+    | '/sports'
+    | '/stories'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesRoute: typeof ActivitiesRoute
+  AgrotechRoute: typeof AgrotechRoute
+  ContactRoute: typeof ContactRoute
+  EducationRoute: typeof EducationRoute
+  EventsRoute: typeof EventsRoute
+  GalleryRoute: typeof GalleryRoute
+  OpportunitiesRoute: typeof OpportunitiesRoute
+  OurVillageRoute: typeof OurVillageRoute
+  SportsRoute: typeof SportsRoute
+  StoriesRoute: typeof StoriesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agrotech': {
+      id: '/agrotech'
+      path: '/agrotech'
+      fullPath: '/agrotech'
+      preLoaderRoute: typeof AgrotechRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education': {
+      id: '/education'
+      path: '/education'
+      fullPath: '/education'
+      preLoaderRoute: typeof EducationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-village': {
+      id: '/our-village'
+      path: '/our-village'
+      fullPath: '/our-village'
+      preLoaderRoute: typeof OurVillageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sports': {
+      id: '/sports'
+      path: '/sports'
+      fullPath: '/sports'
+      preLoaderRoute: typeof SportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stories': {
+      id: '/stories'
+      path: '/stories'
+      fullPath: '/stories'
+      preLoaderRoute: typeof StoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesRoute: ActivitiesRoute,
+  AgrotechRoute: AgrotechRoute,
+  ContactRoute: ContactRoute,
+  EducationRoute: EducationRoute,
+  EventsRoute: EventsRoute,
+  GalleryRoute: GalleryRoute,
+  OpportunitiesRoute: OpportunitiesRoute,
+  OurVillageRoute: OurVillageRoute,
+  SportsRoute: SportsRoute,
+  StoriesRoute: StoriesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

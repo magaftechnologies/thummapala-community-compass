@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import {
   ArrowUpRight,
@@ -35,6 +36,12 @@ import {
   imageMetadata,
   c,
   nav,
+  moreNav,
+  focusAreas,
+  villageStats,
+  opportunityPreview,
+  pageIntros,
+  type PageKey,
   heroSlides,
   facts,
   programs,
@@ -58,13 +65,13 @@ type Translate = (copy: Copy) => string;
 type Open = (entry: Entry) => void;
 function Brand() {
   return (
-    <a className="brand" href="#home" aria-label="Thummapala home">
+    <Link className="brand" to="/" aria-label="Thummapala home">
       <Sprout strokeWidth={1.3} />
       <span>
         <strong>THUMMAPALA</strong>
         <small>తుమ్మపాల · Growing together</small>
       </span>
-    </a>
+    </Link>
   );
 }
 function LanguageSwitch({ lang, setLang }: { lang: Language; setLang: (lang: Language) => void }) {
@@ -111,19 +118,29 @@ function Navbar({
         <div className="nav-inner">
           <Brand />
           <nav className="desktop-links" aria-label="Main navigation">
-            {nav.map(([id, label]) => (
-              <a href={`#${id}`} key={id}>
+            {nav.map(([to, label]) => (
+              <Link to={to} key={to} activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
                 {t(label)}
-              </a>
+              </Link>
             ))}
+            <details className="nav-more">
+              <summary>{t(c("More", "మరిన్ని"))}</summary>
+              <div className="nav-more-menu">
+                {moreNav.map(([to, label]) => (
+                  <Link to={to} key={to}>
+                    {t(label)}
+                  </Link>
+                ))}
+              </div>
+            </details>
           </nav>
           <div className="nav-actions">
             <LanguageSwitch lang={lang} setLang={setLang} />
             <Button asChild variant="editorial" className="nav-explore">
-              <a href="#contact">
+              <Link to="/contact">
                 {t(c("Join our journey", "మన ప్రయాణంలో భాగమవ్వండి"))}
                 <ArrowUpRight />
-              </a>
+              </Link>
             </Button>
             <Button
               size="icon"
@@ -145,19 +162,20 @@ function Navbar({
           </DialogDescription>
           <div className="mobile-menu-top">
             <Brand />
-            <LanguageSwitch lang={lang} setLang={setLang} />
           </div>
-          {nav.map(([id, label]) => (
-            <a key={id} href={`#${id}`} onClick={() => setMenu(false)}>
-              {t(label)} <ArrowUpRight className="inline size-5" />
-            </a>
+          {[...nav, ...moreNav].map(([to, label]) => (
+            <Link key={to} to={to} onClick={() => setMenu(false)}>
+              {t(label)}
+            </Link>
           ))}
-          <a href="#gallery" onClick={() => setMenu(false)}>
-            {t(c("Gallery", "ఫోటోలు"))}
-          </a>
-          <a href="#location" onClick={() => setMenu(false)}>
-            {t(c("Find Thummapala", "తుమ్మపాలను చేరుకోండి"))}
-          </a>
+          <div className="mobile-menu-bottom">
+            <LanguageSwitch lang={lang} setLang={setLang} />
+            <Button asChild className="nav-explore">
+              <Link to="/contact" onClick={() => setMenu(false)}>
+                {t(c("Join our journey", "మన ప్రయాణంలో భాగమవ్వండి"))}
+              </Link>
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </>
@@ -222,13 +240,13 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
           </p>
           <div className="hero-actions">
             <Button asChild variant="hero" className="hero-cta">
-              <a href={`#${slide.target}`}>
+              <Link to={slide.path}>
                 {t(slide.cta)}
                 <ArrowUpRight />
-              </a>
+              </Link>
             </Button>
             <Button asChild variant="cinematic" className="hero-cta-secondary">
-              <a href="#contact">{t(c("Join our journey", "మన ప్రయాణంలో చేరండి"))}</a>
+              <Link to="/contact">{t(c("Join our journey", "మన ప్రయాణంలో చేరండి"))}</Link>
             </Button>
           </div>
         </div>
@@ -292,12 +310,12 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
     </section>
     <div className="impact-strip" aria-label={t(c("Village figures · 2011 Census", "గ్రామ వివరాలు · 2011 జనగణన"))}>
       <div className="container-wide impact-grid">
-        {facts.map((fact, i) => (
-          <div className="impact-stat" key={fact.label.en}>
-            {i === 0 ? <Users aria-hidden="true" /> : i === 1 ? <Home aria-hidden="true" /> : <MapPin aria-hidden="true" />}
+        {villageStats.map((stat, i) => (
+          <div className="impact-stat" key={stat.label.en}>
+            {i === 0 ? <Users aria-hidden="true" /> : i === 1 ? <Home aria-hidden="true" /> : <CalendarDays aria-hidden="true" />}
             <div>
-              <strong><Counter value={fact.value} /></strong>
-              <span>{t(fact.label)}</span>
+              <strong>{"value" in stat && stat.value ? <Counter value={stat.value} /> : stat.text}</strong>
+              <span>{t(stat.label)}</span>
             </div>
           </div>
         ))}
@@ -788,8 +806,8 @@ function Stories({ t, open }: { t: Translate; open: Open }) {
     <section id="stories" className="section story-section">
       <div className="container-wide">
         <SectionHead
-          eyebrow={c("FROM OUR VILLAGE, WITH POSSIBILITY", "మన ఊరి నుంచి కొత్త ఆశయాలతో")}
-          title={c("Stories that inspire.", "మనందరికీ స్ఫూర్తిగా.")}
+          eyebrow={c("PEOPLE FROM THUMMAPALA WHO ARE MOVING FORWARD", "ముందుకు సాగుతున్న తుమ్మపాల వాసులు")}
+          title={c("Our Success Stories", "మన విజయ గాథలు")}
           t={t}
         />
         <div className="story-layout">
@@ -968,7 +986,7 @@ function Activities({ t, open }: { t: Translate; open: Open }) {
       <div className="container-wide">
         <SectionHead
           eyebrow={c("THE EVERYDAY, AND THE EXTRAORDINARY", "రోజువారీ జీవితం. ప్రత్యేక క్షణాలు.")}
-          title={c("Life in Thummapala.", "మన తుమ్మపాలలో జీవితం.")}
+          title={c("Village Activities", "గ్రామ కార్యక్రమాలు")}
           t={t}
         >
           <TextLink onClick={() => setAll(!all)}>
@@ -1033,7 +1051,7 @@ function Events({ t, open }: { t: Translate; open: Open }) {
     <section id="events" className="section container-wide">
       <SectionHead
         eyebrow={c("GOOD THINGS HAPPEN TOGETHER", "కలిసి చేస్తే మంచి జరుగుతుంది")}
-        title={c("What’s happening.", "మన ఊరిలో ఏం జరుగుతోంది?")}
+        title={c("Thummapala Events", "తుమ్మపాల కార్యక్రమాలు")}
         t={t}
       >
         <CarouselControls
@@ -1210,7 +1228,7 @@ function Gallery({
     <section id="gallery" className="section container-wide">
       <SectionHead
         eyebrow={c("A VILLAGE, IN MOMENTS", "ఒక ఊరు. ఎన్నో క్షణాలు.")}
-        title={c("A glimpse of our world.", "మన ప్రపంచంలో కొన్ని క్షణాలు.")}
+        title={c("Gallery", "ఫోటోలు")}
         t={t}
       />
       <Filters
@@ -1375,8 +1393,8 @@ function Enquiry({ t }: { t: Translate }) {
     <section id="contact" className="section enquiry-section">
       <div className="container-wide enquiry-layout">
         <div className="enquiry-intro">
-          <p className="eyebrow">{t(c("CHAPTER 08 · CONNECT", "అధ్యాయం 08 · కలవండి"))}</p>
-          <h2 className="section-title">{t(c("Be part of Thummapala’s journey.", "తుమ్మపాల ప్రయాణంలో భాగమవ్వండి."))}</h2>
+          <p className="eyebrow">{t(c("GET IN TOUCH", "సంప్రదించండి"))}</p>
+          <h2 className="section-title">{t(c("Be Part of the Journey", "ప్రయాణంలో భాగమవ్వండి"))}</h2>
           <p className="section-copy">{t(c("Have a question, want to support a programme, share an opportunity, or connect with the community? We’d love to hear from you.", "ఏదైనా అడగాలనుకుంటున్నారా, కార్యక్రమానికి తోడ్పడాలనుకుంటున్నారా, అవకాశం పంచుకోవాలనుకుంటున్నారా? మన కమ్యూనిటీతో మీ అనుబంధాన్ని ప్రారంభించండి."))}</p>
           <span className="enquiry-mark" aria-hidden="true"><Sprout strokeWidth={1} /></span>
         </div>
@@ -1468,14 +1486,11 @@ function Footer({ t, open }: { t: Translate; open: Open }) {
             </p>
           </div>
           <nav className="footer-nav" aria-label="Footer navigation">
-            {nav.map(([id, label]) => (
-              <a key={id} href={`#${id}`}>
+            {[...nav.slice(1), ...moreNav].map(([to, label]) => (
+              <Link key={to} to={to}>
                 {t(label)}
-              </a>
+              </Link>
             ))}
-            <a href="#gallery">{t(c("Gallery", "ఫోటోలు"))}</a>
-            <a href="#events">{t(c("Events", "కార్యక్రమాలు"))}</a>
-            <a href="#location">{t(c("Contact & location", "సంప్రదింపులు, స్థానం"))}</a>
           </nav>
           <div className="footer-location">
             {t(c("Thummapala, Anakapalli", "తుమ్మపాల, అనకాపల్లి"))}
@@ -1656,8 +1671,31 @@ function Detail({
     </Dialog>
   );
 }
-export function VillageExperience() {
-  const [lang, setLang] = useState<Language>("en");
+let languageState: Language = "en";
+const languageListeners = new Set<() => void>();
+function useLanguage() {
+  const lang = useSyncExternalStore(
+    (listener) => {
+      languageListeners.add(listener);
+      return () => languageListeners.delete(listener);
+    },
+    () => languageState,
+    () => "en" as Language,
+  );
+  const setLang = (next: Language) => {
+    languageState = next;
+    languageListeners.forEach((listener) => listener());
+  };
+  return [lang, setLang] as const;
+}
+type PageContext = {
+  t: Translate;
+  lang: Language;
+  open: Open;
+  showGallery: (entry: Entry, items: Entry[]) => void;
+};
+function SitePage({ children }: { children: (ctx: PageContext) => ReactNode }) {
+  const [lang, setLang] = useLanguage();
   const [detail, setDetail] = useState<Entry | null>(null);
   const [galleryItems, setGalleryItems] = useState<Entry[]>([]);
   const t: Translate = (copy) => copy[lang];
@@ -1668,39 +1706,339 @@ export function VillageExperience() {
     setGalleryItems([]);
     setDetail(e);
   };
+  const showGallery = (e: Entry, items: Entry[]) => {
+    setGalleryItems(items);
+    setDetail(e);
+  };
   return (
     <>
       <Navbar t={t} lang={lang} setLang={setLang} />
-      <main>
-        <Hero t={t} lang={lang} />
-        <Village t={t} />
-        <Pillars t={t} />
-        <Education t={t} open={open} />
-        <Opportunities t={t} open={open} />
-        <Agrotech t={t} open={open} />
-        <Sports t={t} open={open} />
-        <Activities t={t} open={open} />
-        <Stories t={t} open={open} />
-        <Events t={t} open={open} />
-        <Future t={t} open={open} />
-        <Gallery
-          t={t}
-          onSelect={(e, items) => {
-            setGalleryItems(items);
-            setDetail(e);
-          }}
-        />
-        <Location t={t} />
-        <Enquiry t={t} />
-      </main>
+      <main className="page-enter">{children({ t, lang, open, showGallery })}</main>
       <Footer t={t} open={open} />
-      <Detail
-        entry={detail}
-        onClose={() => setDetail(null)}
-        t={t}
-        galleryItems={galleryItems}
-        onNavigate={setDetail}
-      />
+      <Detail entry={detail} onClose={() => setDetail(null)} t={t} galleryItems={galleryItems} onNavigate={setDetail} />
     </>
+  );
+}
+function HomeHead({ eyebrow, title, line, t, children }: { eyebrow?: Copy; title: Copy; line?: Copy; t: Translate; children?: ReactNode }) {
+  return (
+    <div className="section-head">
+      <div>
+        {eyebrow && <p className="eyebrow">{t(eyebrow)}</p>}
+        <h2 className="section-title">{t(title)}</h2>
+        {line && <p className="section-line">{t(line)}</p>}
+      </div>
+      {children}
+    </div>
+  );
+}
+function MoreLink({ to, children }: { to: "/our-village" | "/education" | "/opportunities" | "/events" | "/activities" | "/gallery" | "/stories" | "/contact"; children: ReactNode }) {
+  return (
+    <Button asChild variant="editorial" className="text-link">
+      <Link to={to}>
+        {children}
+        <ArrowRight size={15} />
+      </Link>
+    </Button>
+  );
+}
+function AboutVillage({ t }: { t: Translate }) {
+  return (
+    <section id="about" className="section container-wide">
+      <div className="split reveal">
+        <div className="split-media">
+          <img loading="lazy" src={images.village} alt="Representative rural Andhra landscape with paddy fields and palm trees" />
+        </div>
+        <div className="split-text">
+          <p className="eyebrow">{t(c("Small-town roots. Big-hearted dreams.", "మన ఊరి మూలాలు. పెద్ద ఆశయాలు."))}</p>
+          <h2 className="section-title">{t(c("About Our Village", "మన ఊరి గురించి"))}</h2>
+          <p className="section-copy">
+            {t(
+              c(
+                "Thummapala is a village shaped by its people, farms, schools, sports and community spirit. From learning and agriculture to youth activities, this is a place where people come together to build a better future.",
+                "తుమ్మపాల మన ప్రజలు, పొలాలు, పాఠశాలలు, క్రీడలు, కమ్యూనిటీ స్ఫూర్తితో రూపొందిన ఊరు. చదువు, వ్యవసాయం నుంచి యువత కార్యక్రమాల వరకు — మంచి భవిష్యత్తు కోసం అందరం కలిసి సాగుతున్నాం.",
+              ),
+            )}
+          </p>
+          <MoreLink to="/our-village">{t(c("Explore Our Village", "మన ఊరిని చూడండి"))}</MoreLink>
+        </div>
+      </div>
+    </section>
+  );
+}
+function FocusAreas({ t }: { t: Translate }) {
+  const [ref, api] = useEmblaCarousel({ loop: true, align: "start", dragFree: false });
+  const [paused, setPaused] = useState(false);
+  const [selected, setSelected] = useState(0);
+  const slides = [...focusAreas, ...focusAreas];
+  useEffect(() => {
+    if (!api) return;
+    const select = () => setSelected(api.selectedScrollSnap() % focusAreas.length);
+    select();
+    api.on("select", select);
+    return () => {
+      api.off("select", select);
+    };
+  }, [api]);
+  useEffect(() => {
+    if (!api || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => api.scrollNext(), 4500);
+    return () => clearInterval(timer);
+  }, [api, paused]);
+  return (
+    <section id="focus" className="section focus-section">
+      <div className="container-wide">
+        <HomeHead title={c("Our Focus Areas", "మన ముఖ్య రంగాలు")} line={c("Three paths, one shared future. Choose where to begin.", "మూడు దారులు, ఒకే భవిష్యత్తు. ఎక్కడ మొదలుపెడతారో ఎంచుకోండి.")} t={t}>
+          <CarouselControls t={t} prev={() => api?.scrollPrev()} next={() => api?.scrollNext()} />
+        </HomeHead>
+        <div
+          className="carousel-viewport focus-viewport"
+          ref={ref}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => setPaused(false)}
+        >
+          <div className="carousel-track">
+            {slides.map((f, i) => (
+              <div className="focus-slide" key={`${f.path}-${i}`} aria-hidden={i >= focusAreas.length ? true : undefined}>
+                <Link to={f.path} className="focus-card" tabIndex={i >= focusAreas.length ? -1 : undefined}>
+                  <img loading="lazy" src={images[f.image]} alt={`${t(f.title)} · Representative visual`} />
+                  <div className="focus-card-body">
+                    <span className="focus-number">0{(i % focusAreas.length) + 1}</span>
+                    <h3>{t(f.title)}</h3>
+                    <p>{t(f.line)}</p>
+                    <span className="focus-cta">
+                      {t(f.cta)} <ArrowRight size={15} />
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="focus-dots" aria-hidden="true">
+          {focusAreas.map((f, i) => (
+            <span key={f.path} className={i === selected ? "active" : ""} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+function EducationPreview({ t }: { t: Translate }) {
+  const points = [c("School support", "పాఠశాల చదువుకు తోడు"), c("Extra learning", "అదనపు అభ్యాసం"), c("Career guidance", "కెరీర్ మార్గదర్శనం")];
+  return (
+    <section id="education-preview" className="section education-section">
+      <div className="container-wide split split-reverse reveal">
+        <div className="split-text">
+          <p className="eyebrow">{t(c("Education at a glance", "చదువు ఒక చూపులో"))}</p>
+          <h2 className="section-title">{t(c("Education", "చదువు"))}</h2>
+          <p className="section-line">{t(c("Learning that opens new doors.", "కొత్త దారులు తెరిచే చదువు."))}</p>
+          <ul className="point-list">
+            {points.map((p) => (
+              <li key={p.en}>
+                <BookOpen size={16} aria-hidden="true" />
+                {t(p)}
+              </li>
+            ))}
+          </ul>
+          <MoreLink to="/education">{t(c("Explore Education", "చదువు చూడండి"))}</MoreLink>
+        </div>
+        <div className="split-media">
+          <img loading="lazy" src={images.education} alt="Representative students learning in an Andhra school" />
+        </div>
+      </div>
+    </section>
+  );
+}
+function OpportunityPreview({ t }: { t: Translate }) {
+  const icons = [Award, GraduationCap, Monitor, BookOpen];
+  return (
+    <section id="opportunities-preview" className="section container-wide">
+      <HomeHead title={c("Opportunities", "అవకాశాలు")} line={c("Find a pathway that fits your next step.", "మీ తదుపరి అడుగుకు సరైన దారి.")} t={t}>
+        <MoreLink to="/opportunities">{t(c("View Opportunities", "అవకాశాలు చూడండి"))}</MoreLink>
+      </HomeHead>
+      <div className="opp-tiles">
+        {opportunityPreview.map((o, i) => {
+          const Icon = icons[i] ?? BookOpen;
+          return (
+            <Link to="/opportunities" className="opp-tile" key={o.en}>
+              <Icon aria-hidden="true" strokeWidth={1.5} />
+              <span>{t(o)}</span>
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+          );
+        })}
+      </div>
+      <p className="data-note">{t(c("Sample categories — not official recruitment notifications.", "నమూనా వర్గాలు — అధికారిక ఉద్యోగ ప్రకటనలు కావు."))}</p>
+    </section>
+  );
+}
+function ActivitiesPreview({ t, open }: { t: Translate; open: Open }) {
+  return (
+    <section id="activities-preview" className="section activities-preview">
+      <div className="container-wide">
+        <HomeHead title={c("Village Activities", "గ్రామ కార్యక్రమాలు")} line={c("A glimpse of what is happening around the village.", "మన ఊరిలో జరుగుతున్న వాటి సంగ్రహం.")} t={t}>
+          <MoreLink to="/activities">{t(c("All activities", "అన్ని కార్యక్రమాలు"))}</MoreLink>
+        </HomeHead>
+        <div className="activity-tiles">
+          {activities.slice(0, 6).map((a) => (
+            <button type="button" className="activity-tile" key={a.id} onClick={() => open(a)}>
+              <img loading="lazy" src={images[a.image]} alt="" />
+              <span>
+                <small>{a.date} · {t(c("Sample", "నమూనా"))}</small>
+                {t(a.category)}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+function ComingSoon({ t, open }: { t: Translate; open: Open }) {
+  return (
+    <section id="coming-soon" className="section future-section">
+      <div className="container-wide">
+        <HomeHead title={c("Coming Soon", "త్వరలో")} line={c("The future we are building — ideas still being planned with the community.", "మనం నిర్మించే రేపు — కమ్యూనిటీతో ఇంకా ప్రణాళికలో ఉన్న ఆలోచనలు.")} t={t} />
+        <div className="soon-grid">
+          {futureInitiatives.map((f, i) => (
+            <button type="button" className="soon-card" key={f.id} onClick={() => open(f)}>
+              <span className="soon-number">0{i + 1}</span>
+              <strong>{t(f.title)}</strong>
+              <small>{f.status && t(f.status)}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+function GalleryPreview({ t, onSelect }: { t: Translate; onSelect: (entry: Entry, items: Entry[]) => void }) {
+  const items = gallery.slice(0, 6);
+  return (
+    <section id="gallery-preview" className="section container-wide">
+      <HomeHead title={c("Gallery", "ఫోటోలు")} line={c("A few moments from Thummapala.", "తుమ్మపాలలో కొన్ని క్షణాలు.")} t={t}>
+        <MoreLink to="/gallery">{t(c("View Gallery", "ఫోటోలు చూడండి"))}</MoreLink>
+      </HomeHead>
+      <div className="gallery-grid gallery-preview-grid">
+        {items.map((g) => (
+          <Button variant="editorial" className="gallery-item" key={g.id} aria-label={`${t(c("Open photograph", "ఫోటో తెరవండి"))}: ${t(g.title)}`} onClick={() => onSelect(g, items)}>
+            <img src={images[g.image]} loading="lazy" alt={t(g.title) + " · Representative visual"} />
+            <span>{t(g.title)}</span>
+          </Button>
+        ))}
+      </div>
+      <p className="data-note">{t(c("Representative visuals, not actual Thummapala photographs.", "ప్రాతినిధ్య చిత్రాలు, నిజమైన తుమ్మపాల ఫోటోలు కావు."))}</p>
+    </section>
+  );
+}
+export function VillageExperience() {
+  return (
+    <SitePage>
+      {({ t, lang, open, showGallery }) => (
+        <>
+          <Hero t={t} lang={lang} />
+          <AboutVillage t={t} />
+          <FocusAreas t={t} />
+          <EducationPreview t={t} />
+          <OpportunityPreview t={t} />
+          <Stories t={t} open={open} />
+          <Events t={t} open={open} />
+          <ActivitiesPreview t={t} open={open} />
+          <ComingSoon t={t} open={open} />
+          <GalleryPreview t={t} onSelect={showGallery} />
+          <Location t={t} />
+          <Enquiry t={t} />
+        </>
+      )}
+    </SitePage>
+  );
+}
+function PageHero({ page, t }: { page: PageKey; t: Translate }) {
+  const info = pageIntros[page];
+  return (
+    <section id="home" className="page-hero">
+      <img className="page-hero-photo" src={images[info.image]} alt="" fetchPriority="high" />
+      <div className="hero-shade" aria-hidden="true" />
+      <div className="container-wide page-hero-body">
+        <nav className="crumbs" aria-label="Breadcrumb">
+          <Link to="/">{t(c("Home", "హోమ్"))}</Link>
+          <span aria-hidden="true">/</span>
+          <span>{t(info.title)}</span>
+        </nav>
+        <h1>{t(info.title)}</h1>
+        <p>{t(info.line)}</p>
+      </div>
+    </section>
+  );
+}
+function PageCta({ t }: { t: Translate }) {
+  return (
+    <section className="page-cta">
+      <div className="container-wide page-cta-inner">
+        <h2>{t(c("Want to be part of this?", "ఇందులో భాగమవ్వాలనుకుంటున్నారా?"))}</h2>
+        <Button asChild className="hero-cta">
+          <Link to="/contact">
+            {t(c("Be part of the journey", "ప్రయాణంలో భాగమవ్వండి"))}
+            <ArrowRight />
+          </Link>
+        </Button>
+      </div>
+    </section>
+  );
+}
+function PageContent({ page, ctx }: { page: PageKey; ctx: PageContext }) {
+  const { t, open, showGallery } = ctx;
+  switch (page) {
+    case "our-village":
+      return (
+        <>
+          <Village t={t} />
+          <ActivitiesPreview t={t} open={open} />
+          <Location t={t} />
+        </>
+      );
+    case "education":
+      return (
+        <>
+          <Education t={t} open={open} />
+          <ComingSoon t={t} open={open} />
+        </>
+      );
+    case "agrotech":
+      return <Agrotech t={t} open={open} />;
+    case "sports":
+      return <Sports t={t} open={open} />;
+    case "opportunities":
+      return <Opportunities t={t} open={open} />;
+    case "events":
+      return <Events t={t} open={open} />;
+    case "activities":
+      return <Activities t={t} open={open} />;
+    case "stories":
+      return <Stories t={t} open={open} />;
+    case "gallery":
+      return <Gallery t={t} onSelect={showGallery} />;
+    case "contact":
+      return (
+        <>
+          <Enquiry t={t} />
+          <Location t={t} />
+        </>
+      );
+  }
+}
+export function InnerPage({ page }: { page: PageKey }) {
+  return (
+    <SitePage>
+      {(ctx) => (
+        <>
+          <PageHero page={page} t={ctx.t} />
+          <PageContent page={page} ctx={ctx} />
+          {page !== "contact" && <PageCta t={ctx.t} />}
+        </>
+      )}
+    </SitePage>
   );
 }

@@ -7,3 +7,5 @@
 - [x] Recommend next step after remix (again).
 - [x] Rebuild layout per "critical design correction" brief: one container/grid/type scale, hero in normal flow, stats strip separate, story order, no overlaps; QA at 1440/1280/1024/768/390/360.
 - [x] Recommend next step after remix (third ask).
+- [x] Final homepage restructure: short story homepage, equal focus-card carousel linking to inner pages, dedicated pages (/our-village, /education, /agrotech, /sports, /opportunities, /events, /activities, /stories, /gallery, /contact).
+- [x] Recommend next step after remix (fourth ask).

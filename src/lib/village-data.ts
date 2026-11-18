@@ -40,18 +40,91 @@ const entry = (
   image: ImageKey,
   extras: Partial<Entry> = {},
 ): Entry => ({ id, title, description, category, image, isDemo: true, ...extras });
+export type SitePath =
+  | "/"
+  | "/our-village"
+  | "/education"
+  | "/agrotech"
+  | "/sports"
+  | "/opportunities"
+  | "/events"
+  | "/activities"
+  | "/stories"
+  | "/gallery"
+  | "/contact";
 export const nav = [
-  ["village", c("Our Village", "మన ఊరు")],
-  ["education", c("Education", "చదువు")],
-  ["agrotech", c("Agrotech", "వ్యవసాయం")],
-  ["sports", c("Sports", "క్రీడలు")],
-  ["opportunities", c("Opportunities", "అవకాశాలు")],
-  ["activities", c("Activities", "కార్యక్రమాలు")],
-  ["events", c("Events", "కార్యక్రమాలు")],
-  ["stories", c("Stories", "కథలు")],
-  ["gallery", c("Gallery", "ఫోటోలు")],
-  ["contact", c("Contact", "సంప్రదించండి")],
+  ["/", c("Home", "హోమ్")],
+  ["/our-village", c("Our Village", "మన ఊరు")],
+  ["/education", c("Education", "చదువు")],
+  ["/agrotech", c("Agrotech", "వ్యవసాయం")],
+  ["/sports", c("Sports", "క్రీడలు")],
+  ["/opportunities", c("Opportunities", "అవకాశాలు")],
+  ["/events", c("Events", "కార్యక్రమాలు")],
+  ["/gallery", c("Gallery", "ఫోటోలు")],
 ] as const;
+export const moreNav = [
+  ["/activities", c("Activities", "గ్రామ కార్యక్రమాలు")],
+  ["/stories", c("Success Stories", "విజయ గాథలు")],
+  ["/contact", c("Contact", "సంప్రదించండి")],
+] as const;
+export const innerPaths: SitePath[] = [...nav.slice(1), ...moreNav].map(([path]) => path);
+export const focusAreas = [
+  {
+    path: "/education",
+    image: "education",
+    title: c("Education", "చదువు"),
+    line: c("Learning that opens new doors.", "కొత్త దారులు తెరిచే చదువు."),
+    cta: c("Explore Education", "చదువు చూడండి"),
+  },
+  {
+    path: "/agrotech",
+    image: "agriculture",
+    title: c("Agrotech", "వ్యవసాయం"),
+    line: c("Better ideas for better farming.", "మంచి వ్యవసాయానికి కొత్త ఆలోచనలు."),
+    cta: c("Explore Agrotech", "వ్యవసాయం చూడండి"),
+  },
+  {
+    path: "/sports",
+    image: "sports",
+    title: c("Sports", "క్రీడలు"),
+    line: c("Play. Compete. Grow.", "ఆడుదాం. పోటీపడదాం. ఎదుగుదాం."),
+    cta: c("Explore Sports", "క్రీడలు చూడండి"),
+  },
+] as const satisfies readonly { path: SitePath; image: ImageKey; title: Copy; line: Copy; cta: Copy }[];
+export const villageStats = [
+  { value: 31035, label: c("Population", "జనాభా") },
+  { value: 8074, label: c("Households", "కుటుంబాలు") },
+  { text: "2011", label: c("Census", "జనగణన") },
+];
+export const opportunityPreview = [
+  c("Jobs", "ఉద్యోగాలు"),
+  c("Scholarships", "స్కాలర్‌షిప్‌లు"),
+  c("Internships", "ఇంటర్న్‌షిప్‌లు"),
+  c("Training", "శిక్షణ"),
+];
+export type PageKey =
+  | "our-village"
+  | "education"
+  | "agrotech"
+  | "sports"
+  | "opportunities"
+  | "events"
+  | "activities"
+  | "stories"
+  | "gallery"
+  | "contact";
+export const pageIntros: Record<PageKey, { title: Copy; line: Copy; image: ImageKey }> = {
+  "our-village": { title: c("Our Village", "మన ఊరు"), line: c("The people, land and spirit of Thummapala.", "తుమ్మపాల ప్రజలు, నేల, స్ఫూర్తి."), image: "village" },
+  education: { title: c("Education", "చదువు"), line: c("Learning that opens new doors.", "కొత్త దారులు తెరిచే చదువు."), image: "education" },
+  agrotech: { title: c("Agrotech", "వ్యవసాయం"), line: c("Better ideas for better farming.", "మంచి వ్యవసాయానికి కొత్త ఆలోచనలు."), image: "village" },
+  sports: { title: c("Sports", "క్రీడలు"), line: c("Play. Compete. Grow.", "ఆడుదాం. పోటీపడదాం. ఎదుగుదాం."), image: "sports" },
+  opportunities: { title: c("Opportunities", "అవకాశాలు"), line: c("Jobs, scholarships, internships and training — sample listings.", "ఉద్యోగాలు, స్కాలర్‌షిప్‌లు, ఇంటర్న్‌షిప్‌లు, శిక్షణ — నమూనా వివరాలు."), image: "future" },
+  events: { title: c("Thummapala Events", "తుమ్మపాల కార్యక్రమాలు"), line: c("What is coming up in the village.", "మన ఊరిలో రాబోయే కార్యక్రమాలు."), image: "village" },
+  activities: { title: c("Village Activities", "గ్రామ కార్యక్రమాలు"), line: c("A glimpse of what is happening around the village.", "మన ఊరిలో జరుగుతున్న వాటి సంగ్రహం."), image: "education" },
+  stories: { title: c("Our Success Stories", "మన విజయ గాథలు"), line: c("People from Thummapala who are moving forward.", "ముందుకు సాగుతున్న తుమ్మపాల వాసులు."), image: "education" },
+  gallery: { title: c("Gallery", "ఫోటోలు"), line: c("A few moments from Thummapala.", "తుమ్మపాలలో కొన్ని క్షణాలు."), image: "village" },
+  contact: { title: c("Be Part of the Journey", "ప్రయాణంలో భాగమవ్వండి"), line: c("Have a question, an idea or want to connect with Thummapala?", "ప్రశ్న, ఆలోచన ఉందా? తుమ్మపాలతో కలవాలనుకుంటున్నారా?"), image: "village" },
+};
 export const heroSlides = [
   {
     image: "village",
@@ -59,7 +132,7 @@ export const heroSlides = [
     subtitle: c("Our village. Our people. Our future.", "మన ఊరు. మన ప్రజలు. మన భవిష్యత్తు."),
     label: c("A place to belong. A place to grow.", "మన ఊరు. మన ఎదుగుదల."),
     cta: c("Explore Thummapala", "తుమ్మపాలను తెలుసుకోండి"),
-    target: "village",
+    path: "/our-village",
     category: c("Our village", "మన ఊరు"),
   },
   {
@@ -68,7 +141,7 @@ export const heroSlides = [
     subtitle: c("Learn here. Grow here. Go further.", "చదువు… ఒక పాఠం కాదు, ఒక అవకాశం."),
     label: c("Learning without limits", "హద్దులు లేని చదువు"),
     cta: c("Explore Education", "చదువు గురించి"),
-    target: "education",
+    path: "/education",
     category: c("Education", "చదువు"),
   },
   {
@@ -77,7 +150,7 @@ export const heroSlides = [
     subtitle: c("Rooted in our soil. Open to new ideas.", "మన నేల. మన బలం."),
     label: c("The land that brings us together", "మనల్ని కలిపే నేల"),
     cta: c("Explore Agrotech", "వ్యవసాయం గురించి"),
-    target: "agrotech",
+    path: "/agrotech",
     category: c("Agrotech", "వ్యవసాయం"),
   },
   {
@@ -86,7 +159,7 @@ export const heroSlides = [
     subtitle: c("Where young talent takes the field.", "ఆడుదాం. పోరాడుదాం. గెలుద్దాం."),
     label: c("Strength through sport", "క్రీడలతో బలం"),
     cta: c("Explore Sports", "క్రీడలు చూడండి"),
-    target: "sports",
+    path: "/sports",
     category: c("Sports", "క్రీడలు"),
   },
   {
@@ -95,7 +168,7 @@ export const heroSlides = [
     subtitle: c("The future starts with opportunity.", "రేపటి ప్రపంచానికి… ఈరోజే సిద్ధం."),
     label: c("A village looking forward", "ముందుకు సాగుతున్న ఊరు"),
     cta: c("Explore Our Vision", "మన భవిష్యత్తు"),
-    target: "future",
+    path: "/education",
     category: c("Our future", "మన భవిష్యత్తు"),
   },
 ] satisfies {
@@ -104,7 +177,7 @@ export const heroSlides = [
   subtitle: Copy;
   label: Copy;
   cta: Copy;
-  target: string;
+  path: SitePath;
   category: Copy;
 }[];
 export const facts = [
