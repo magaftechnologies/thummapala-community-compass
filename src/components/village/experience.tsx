@@ -4,7 +4,6 @@ import {
   ArrowUpRight,
   ArrowRight,
   ArrowLeft,
-  ArrowDown,
   MapPin,
   Menu,
   X,
@@ -17,14 +16,13 @@ import {
   Users,
   Trophy,
   CalendarDays,
-  Megaphone,
+  Home,
   Atom,
   Youtube,
   Instagram,
   Facebook,
   Pause,
   Play,
-  Leaf,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -185,6 +183,7 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
   if (!slide) return null;
   const change = (delta: number) => setIndex((i) => (i + delta + 5) % 5);
   return (
+    <>
     <section
       id="home"
       className="hero"
@@ -205,48 +204,35 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
           fetchPriority={i === 0 ? "high" : "auto"}
         />
       ))}
-      <div className="hero-bottom-shade" />
-      <nav className="hero-chapters" aria-label="Chapters">
-        {([["village", c("Village", "మన ఊరు")], ["education", c("Education", "చదువు")], ["agrotech", c("Agrotech", "వ్యవసాయం")], ["sports", c("Sports", "క్రీడలు")], ["future", c("Future", "భవిష్యత్తు")]] as const).map(([id, label], i) => (
-          <a key={id} href={`#${id}`}><span>0{i + 1}</span>{t(label)}</a>
-        ))}
-      </nav>
-      <div className="hero-content container-wide" key={`${index}-${lang}`}>
-        <p className="eyebrow">{t(slide.label)}</p>
-        <h1>{t(slide.title)}</h1>
-        <p className="hero-subtitle">
-          {lang === "en" && index === 0 ? "మన ఊరు. మన ప్రజలు. మన భవిష్యత్తు." : t(slide.subtitle)}
-        </p>
-        <p className="hero-support">
-          {t(
-            c(
-              "Rooted in nature. Growing through education,\nopportunity, and the strength of our community.",
-              "ప్రకృతితో బంధం. చదువు, అవకాశాలు,\nమనవాళ్ల తోడుతో ముందుకు.",
-            ),
-          )}
-        </p>
-        <Button asChild variant="hero" className="hero-cta">
-          <a href={`#${slide.target}`}>
-            {t(slide.cta)}
-            <ArrowUpRight />
-          </a>
-        </Button>
-      </div>
-      <span className="photo-credit">{t(imageMetadata.caption)}</span>
-      <div className="hero-stats container-wide" aria-label={t(c("Village figures · 2011 Census", "గ్రామ వివరాలు · 2011 జనగణన"))}>
-        {facts.map((fact, i) => (
-          <div className="hero-stat" key={fact.label.en}>
-            {i === 0 ? <Users aria-hidden="true" /> : i === 1 ? <BookOpen aria-hidden="true" /> : <MapPin aria-hidden="true" />}
-            <strong><Counter value={fact.value} /></strong>
-            <span>{t(fact.label)}</span>
+      <div className="hero-shade" aria-hidden="true" />
+      <div className="hero-body container-wide">
+        <div className="hero-content" key={`${index}-${lang}`}>
+          <p className="eyebrow">0{index + 1} — {t(slide.category)}</p>
+          <h1>{t(slide.title)}</h1>
+          <p className="hero-subtitle">
+            {lang === "en" && index === 0 ? "మన ఊరు. మన ప్రజలు. మన భవిష్యత్తు." : t(slide.subtitle)}
+          </p>
+          <p className="hero-support">
+            {t(
+              c(
+                "A village growing through education, opportunity, agriculture, sport and community.",
+                "చదువు, అవకాశాలు, వ్యవసాయం, క్రీడలు, కమ్యూనిటీతో ఎదుగుతున్న మన ఊరు.",
+              ),
+            )}
+          </p>
+          <div className="hero-actions">
+            <Button asChild variant="hero" className="hero-cta">
+              <a href={`#${slide.target}`}>
+                {t(slide.cta)}
+                <ArrowUpRight />
+              </a>
+            </Button>
+            <Button asChild variant="cinematic" className="hero-cta-secondary">
+              <a href="#contact">{t(c("Join our journey", "మన ప్రయాణంలో చేరండి"))}</a>
+            </Button>
           </div>
-        ))}
-      </div>
-      <a href="#village" className="hero-scroll text-primary-foreground">
-        <ArrowDown size={13} />
-        {t(c("SCROLL TO DISCOVER", "మరింత తెలుసుకోండి"))}
-      </a>
-      <div className="hero-controls container-wide">
+        </div>
+        <div className="hero-controls">
         <span className="hero-location">
           <MapPin size={12} />
           {t(c("ANAKAPALLI, ANDHRA PRADESH", "అనకాపల్లి, ఆంధ్రప్రదేశ్"))}
@@ -302,7 +288,23 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
           </Button>
         </div>
       </div>
+      </div>
     </section>
+    <div className="impact-strip" aria-label={t(c("Village figures · 2011 Census", "గ్రామ వివరాలు · 2011 జనగణన"))}>
+      <div className="container-wide impact-grid">
+        {facts.map((fact, i) => (
+          <div className="impact-stat" key={fact.label.en}>
+            {i === 0 ? <Users aria-hidden="true" /> : i === 1 ? <Home aria-hidden="true" /> : <MapPin aria-hidden="true" />}
+            <div>
+              <strong><Counter value={fact.value} /></strong>
+              <span>{t(fact.label)}</span>
+            </div>
+          </div>
+        ))}
+        <p className="impact-note">{t(c("2011 Census figures · verification pending", "2011 జనగణన వివరాలు · నిర్ధారణ అవసరం"))}</p>
+      </div>
+    </div>
+    </>
   );
 }
 function SectionHead({
@@ -1105,33 +1107,6 @@ function Events({ t, open }: { t: Translate; open: Open }) {
     </section>
   );
 }
-function Announcements({ t, open }: { t: Translate; open: Open }) {
-  return (
-    <div className="announcement-band">
-      <span className="announcement-label">
-        <Megaphone size={14} />
-        {t(c("COMMUNITY NOTES · SAMPLE", "కమ్యూనిటీ సమాచారం · నమూనా"))}
-      </span>
-      <div className="ticker">
-        {[...announcements, ...announcements].map((a, i) => (
-          <span key={i}>
-            <Button
-              variant="editorial"
-              className="text-primary-foreground text-xs"
-              onClick={() => {
-                const programme = programs[i % programs.length];
-                if (programme) open({ ...programme, title: a });
-              }}
-            >
-              {t(a)}
-            </Button>
-            <span aria-hidden="true">✦</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
 function Future({ t, open }: { t: Translate; open: Open }) {
   return (
     <section id="future" className="section future-section">
@@ -1469,36 +1444,6 @@ function Enquiry({ t }: { t: Translate }) {
     </section>
   );
 }
-function Community({ t, open }: { t: Translate; open: Open }) {
-  return (
-    <section id="community" className="community container-wide">
-      <p className="eyebrow">
-        {t(c("THERE IS A PLACE FOR YOU HERE", "ఇక్కడ మీరు కూడా భాగస్వాములే"))}
-      </p>
-      <h2 className="section-title">
-        {t(c("Be part of the journey.", "మన ప్రయాణంలో భాగమవ్వండి."))}
-      </h2>
-      <p className="section-copy">
-        {t(
-          c(
-            "Students, farmers, players, mentors, neighbours. Our village grows stronger when we grow together.",
-            "విద్యార్థులు, రైతులు, క్రీడాకారులు, మార్గదర్శులు, మనవాళ్లు. కలిసి ఎదిగితే మన ఊరు బలపడుతుంది.",
-          ),
-        )}
-      </p>
-      <div className="community-links">
-        <TextLink href="#education">{t(c("For students", "విద్యార్థులకు"))}</TextLink>
-        <TextLink href="#agrotech">{t(c("For farmers", "రైతులకు"))}</TextLink>
-        <TextLink href="#opportunities">{t(c("For youth", "యువతకు"))}</TextLink>
-        <TextLink href="#sports">{t(c("For players", "క్రీడాకారులకు"))}</TextLink>
-        <TextLink onClick={() => mentors[0] && open(mentors[0])}>
-          {t(c("For mentors", "మార్గదర్శులకు"))}
-        </TextLink>
-        <TextLink href="#events">{t(c("For our community", "మనవాళ్లకు"))}</TextLink>
-      </div>
-    </section>
-  );
-}
 function Footer({ t, open }: { t: Translate; open: Open }) {
   const social = (name: string) =>
     open({
@@ -1728,20 +1673,25 @@ export function VillageExperience() {
       <Navbar t={t} lang={lang} setLang={setLang} />
       <main>
         <Hero t={t} lang={lang} />
-        <div className="reference-home">
-          <div className="ref-row ref-overview"><Village t={t} /><Pillars t={t} /></div>
-          <div className="ref-row ref-learning"><Education t={t} open={open} /><Opportunities t={t} open={open} /></div>
-          <div className="ref-row ref-community"><Stories t={t} open={open} /><Events t={t} open={open} /></div>
-          <div className="ref-row ref-focus"><Agrotech t={t} open={open} /><Sports t={t} open={open} /><Future t={t} open={open} /></div>
-          <Activities t={t} open={open} />
-          <Announcements t={t} open={open} />
-          <div className="ref-row ref-life">
-            <Gallery t={t} onSelect={(e, items) => { setGalleryItems(items); setDetail(e); }} />
-            <Location t={t} />
-          </div>
-          <Enquiry t={t} />
-          <Community t={t} open={open} />
-        </div>
+        <Village t={t} />
+        <Pillars t={t} />
+        <Education t={t} open={open} />
+        <Opportunities t={t} open={open} />
+        <Agrotech t={t} open={open} />
+        <Sports t={t} open={open} />
+        <Activities t={t} open={open} />
+        <Stories t={t} open={open} />
+        <Events t={t} open={open} />
+        <Future t={t} open={open} />
+        <Gallery
+          t={t}
+          onSelect={(e, items) => {
+            setGalleryItems(items);
+            setDetail(e);
+          }}
+        />
+        <Location t={t} />
+        <Enquiry t={t} />
       </main>
       <Footer t={t} open={open} />
       <Detail
