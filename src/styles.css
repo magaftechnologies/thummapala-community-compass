@@ -2197,3 +2197,6 @@ body { background: var(--paper); }
   .hero-photo.active { animation: none; transform: none; }
   .chapter-progress a, .hero-photo, .full-photo-story > img { transition: none; }
 }
+.hero-stats { width: 100%; }
+.hero-stat strong, .hero-stat strong span { font-size: clamp(24px, 3vw, 40px) !important; line-height: 1; }
+.education-section .telugu-line { color: var(--sunrise); }
