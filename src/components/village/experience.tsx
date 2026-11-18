@@ -206,6 +206,11 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
         />
       ))}
       <div className="hero-bottom-shade" />
+      <nav className="hero-chapters" aria-label="Chapters">
+        {([["village", c("Village", "మన ఊరు")], ["education", c("Education", "చదువు")], ["agrotech", c("Agrotech", "వ్యవసాయం")], ["sports", c("Sports", "క్రీడలు")], ["future", c("Future", "భవిష్యత్తు")]] as const).map(([id, label], i) => (
+          <a key={id} href={`#${id}`}><span>0{i + 1}</span>{t(label)}</a>
+        ))}
+      </nav>
       <div className="hero-content container-wide" key={`${index}-${lang}`}>
         <p className="eyebrow">{t(slide.label)}</p>
         <h1>{t(slide.title)}</h1>
@@ -229,8 +234,9 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
       </div>
       <span className="photo-credit">{t(imageMetadata.caption)}</span>
       <div className="hero-stats container-wide" aria-label={t(c("Village figures · 2011 Census", "గ్రామ వివరాలు · 2011 జనగణన"))}>
-        {facts.map((fact) => (
+        {facts.map((fact, i) => (
           <div className="hero-stat" key={fact.label.en}>
+            {i === 0 ? <Users aria-hidden="true" /> : i === 1 ? <BookOpen aria-hidden="true" /> : <MapPin aria-hidden="true" />}
             <strong><Counter value={fact.value} /></strong>
             <span>{t(fact.label)}</span>
           </div>
@@ -373,42 +379,6 @@ function Counter({ value }: { value: number }) {
     return () => observer.disconnect();
   }, [value]);
   return <span ref={ref}>{count.toLocaleString("en-IN")}</span>;
-}
-function ChapterProgress({ t }: { t: Translate }) {
-  const [active, setActive] = useState("village");
-  useEffect(() => {
-    const sections = ["village", "education", "opportunities", "agrotech", "sports", "events", "future", "contact"]
-      .map((id) => document.getElementById(id))
-      .filter((section): section is HTMLElement => section !== null);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActive(visible.target.id);
-      },
-      { rootMargin: "-25% 0px -55% 0px", threshold: [0, 0.25, 0.5] },
-    );
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
-  const chapters = [
-    ["village", c("Village", "మన ఊరు")],
-    ["education", c("Education", "చదువు")],
-    ["opportunities", c("Opportunity", "అవకాశాలు")],
-    ["agrotech", c("Agrotech", "వ్యవసాయం")],
-    ["sports", c("Sports", "క్రీడలు")],
-    ["events", c("Community", "మనవాళ్లు")],
-    ["future", c("Future", "భవిష్యత్తు")],
-    ["contact", c("Connect", "కలవండి")],
-  ] as const;
-  return (
-    <nav className="chapter-progress" aria-label={t(c("Story chapters", "కథా అధ్యాయాలు"))}>
-      {chapters.map(([id, label], index) => (
-        <a key={id} href={`#${id}`} aria-current={active === id ? "location" : undefined}>
-          <span>0{index + 1}</span><span>{t(label)}</span>
-        </a>
-      ))}
-    </nav>
-  );
 }
 function Village({ t }: { t: Translate }) {
   return (
@@ -1758,28 +1728,20 @@ export function VillageExperience() {
       <Navbar t={t} lang={lang} setLang={setLang} />
       <main>
         <Hero t={t} lang={lang} />
-        <ChapterProgress t={t} />
-        <Village t={t} />
-        <Pillars t={t} />
-        <Education t={t} open={open} />
-        <Opportunities t={t} open={open} />
-        <Stories t={t} open={open} />
-        <Agrotech t={t} open={open} />
-        <Sports t={t} open={open} />
-        <Activities t={t} open={open} />
-        <Events t={t} open={open} />
-        <Announcements t={t} open={open} />
-        <Future t={t} open={open} />
-        <Gallery
-          t={t}
-          onSelect={(e, items) => {
-            setGalleryItems(items);
-            setDetail(e);
-          }}
-        />
-        <Location t={t} />
-        <Enquiry t={t} />
-        <Community t={t} open={open} />
+        <div className="reference-home">
+          <div className="ref-row ref-overview"><Village t={t} /><Pillars t={t} /></div>
+          <div className="ref-row ref-learning"><Education t={t} open={open} /><Opportunities t={t} open={open} /></div>
+          <div className="ref-row ref-community"><Stories t={t} open={open} /><Events t={t} open={open} /></div>
+          <div className="ref-row ref-focus"><Agrotech t={t} open={open} /><Sports t={t} open={open} /><Future t={t} open={open} /></div>
+          <Activities t={t} open={open} />
+          <Announcements t={t} open={open} />
+          <div className="ref-row ref-life">
+            <Gallery t={t} onSelect={(e, items) => { setGalleryItems(items); setDetail(e); }} />
+            <Location t={t} />
+          </div>
+          <Enquiry t={t} />
+          <Community t={t} open={open} />
+        </div>
       </main>
       <Footer t={t} open={open} />
       <Detail
