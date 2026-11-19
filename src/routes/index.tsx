@@ -6,7 +6,7 @@ import { VillageExperience } from "@/components/village/experience";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Thummapala | Education, Agriculture, Sports & Community" },
+      { title: "Thummapala Village | Our Village. Our People. Our Future." },
       {
         name: "description",
         content:

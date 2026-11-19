@@ -1,17 +1,12 @@
-import village from "@/assets/village.asset.json";
-import education from "@/assets/education.asset.json";
-import agriculture from "@/assets/agriculture.asset.json";
-import sports from "@/assets/sports.asset.json";
-import future from "@/assets/future.asset.json";
 export type Language = "en" | "te";
 export type Copy = { en: string; te: string };
 export const c = (en: string, te: string): Copy => ({ en, te });
 export const images = {
-  village: village.url,
-  education: education.url,
-  agriculture: agriculture.url,
-  sports: sports.url,
-  future: future.url,
+  village: "/images/thummapala-village.jpg",
+  education: "/images/thummapala-education.jpg",
+  agriculture: "/images/thummapala-agriculture.jpg",
+  sports: "/images/thummapala-sports.jpg",
+  future: "/images/thummapala-future.jpg",
 };
 export type ImageKey = keyof typeof images;
 export const DATA_VERIFICATION_REQUIRED = true;

@@ -1,26 +1,23 @@
-# Remix of Remix of Remix of Remix of Remix of Pixel Perfect Echo
+# Thummapala Village
 
-Implement exactly the screenshot and nothing else
+**Our Village. Our People. Our Future.**
 
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://thummapala-community-compass.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/fe2e6952-0f76-4d7d-8d00-ba8af6c881bb).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+A bilingual community website for Thummapala, built with React, TypeScript,
+TanStack Start, and Vite.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Install Node.js and npm, then run:
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
+npm install
 npm run dev
+```
+
+## Verification
+
+```bash
+npm test
+npm run build
+npm run preview
 ```

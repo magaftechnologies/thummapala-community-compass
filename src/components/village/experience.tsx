@@ -331,7 +331,7 @@ function SectionHead({
   t,
   children,
 }: {
-  eyebrow: Copy;
+  eyebrow?: Copy;
   title: Copy;
   t: Translate;
   children?: ReactNode;
@@ -339,7 +339,7 @@ function SectionHead({
   return (
     <div className="section-head">
       <div>
-        <p className="eyebrow">{t(eyebrow)}</p>
+        {eyebrow && <p className="eyebrow">{t(eyebrow)}</p>}
         <h2 className="section-title">{t(title)}</h2>
       </div>
       {children}
