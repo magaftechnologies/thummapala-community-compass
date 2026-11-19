@@ -638,8 +638,8 @@ function Education({ t, open }: { t: Translate; open: Open }) {
     </section>
   );
 }
-function useCarousel(count: number, auto = false) {
-  const [ref, api] = useEmblaCarousel({ align: "start", loop: auto, skipSnaps: false });
+function useCarousel(count: number, auto = false, align: "start" | "center" = "start") {
+  const [ref, api] = useEmblaCarousel({ align, loop: auto, skipSnaps: false, duration: 32 });
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [snaps, setSnaps] = useState<number[]>([]);
@@ -799,51 +799,72 @@ function Opportunities({ t, open }: { t: Translate; open: Open }) {
   );
 }
 function Stories({ t, open }: { t: Translate; open: Open }) {
-  const [index, setIndex] = useState(0);
-  const story = stories[index];
-  if (!story) return null;
+  const carousel = useCarousel(stories.length, true, "center");
   return (
     <section id="stories" className="section story-section">
       <div className="container-wide">
         <SectionHead
-          eyebrow={c("PEOPLE FROM THUMMAPALA WHO ARE MOVING FORWARD", "ముందుకు సాగుతున్న తుమ్మపాల వాసులు")}
           title={c("Our Success Stories", "మన విజయ గాథలు")}
           t={t}
-        />
-        <div className="story-layout">
-          <div key={story.id} className="reveal">
-            <img
-              loading="lazy"
-              src={images[story.image]}
-              alt={t(story.title) + " · Representative visual"}
-            />
-            <p className="photo-caption">{t(imageMetadata.caption)}</p>
+        >
+          <CarouselControls
+            t={t}
+            prev={() => carousel.api?.scrollPrev()}
+            next={() => carousel.api?.scrollNext()}
+          />
+        </SectionHead>
+        <p className="section-line story-intro">
+          {t(c("People from Thummapala who are moving forward.", "ముందుకు సాగుతున్న తుమ్మపాల వాసులు."))}
+        </p>
+        <div
+          className="carousel-viewport story-viewport"
+          ref={carousel.ref}
+          aria-roledescription="carousel"
+          aria-label={t(c("Success stories", "విజయ గాథలు"))}
+          onMouseEnter={() => carousel.setPaused(true)}
+          onMouseLeave={() => carousel.setPaused(false)}
+          onFocusCapture={() => carousel.setPaused(true)}
+          onBlurCapture={() => carousel.setPaused(false)}
+        >
+          <div className="carousel-track">
+            {stories.map((story, i) => {
+              const active = i === carousel.index;
+              return (
+                <div className="carousel-slide story-slide" key={story.id} aria-hidden={!active}>
+                  <Button
+                    type="button"
+                    variant="editorial"
+                    className="story-card"
+                    tabIndex={active ? 0 : -1}
+                    aria-label={`${t(c("Read sample story", "నమూనా కథ చదవండి"))}: ${t(story.title)}`}
+                    onClick={() => open(story)}
+                  >
+                    <img loading="lazy" src={images[story.image]} alt="" />
+                    <span className="story-card-shade" aria-hidden="true" />
+                    <span className="story-card-content">
+                      <span className="story-card-label">
+                        {t(c("SAMPLE STORY", "నమూనా కథ"))} · {t(story.category)}
+                      </span>
+                      <span className="story-card-title">{t(story.title)}</span>
+                      <span className="story-card-description">{t(story.description)}</span>
+                      <span className="story-card-cta">
+                        {t(c("Read the story", "కథ చదవండి"))} <ArrowUpRight size={17} />
+                      </span>
+                    </span>
+                  </Button>
+                </div>
+              );
+            })}
           </div>
-          <div>
-            <p className="eyebrow text-primary">
-              {t(c("LEARNING. BELIEVING. BECOMING.", "నేర్చుకుంటూ. నమ్ముతూ. ఎదుగుతూ."))}
-            </p>
-            <h3 className="story-title">{t(story.title)}</h3>
-            <p className="story-quote">{t(story.description)}</p>
-            <p className="story-meta">
-              {t(story.category)} ·{" "}
-              {t(
-                c(
-                  "Illustrative story, not a real testimonial",
-                  "నమూనా కథ, నిజమైన వ్యక్తి వ్యాఖ్య కాదు",
-                ),
-              )}
-            </p>
-            <div className="story-controls">
-              <TextLink onClick={() => open(story)}>{t(c("Read the story", "కథ చదవండి"))}</TextLink>
-              <div className="flex items-center gap-5">
-                <span className="sample">0{index + 1} / 05</span>
-                <CarouselControls
-                  t={t}
-                  prev={() => setIndex((index + 4) % 5)}
-                  next={() => setIndex((index + 1) % 5)}
-                />
-              </div>
+        </div>
+        <div className="carousel-progress story-progress">
+          <span className="sample">{t(imageMetadata.caption)}</span>
+          <div className="flex items-center gap-4">
+            <span className="sample">0{carousel.index + 1} / 0{stories.length}</span>
+            <div className="progress-track" aria-hidden="true">
+              {carousel.snaps.map((_, i) => (
+                <span key={i} className={i === carousel.index ? "active" : ""} />
+              ))}
             </div>
           </div>
         </div>
@@ -1046,7 +1067,7 @@ function Activities({ t, open }: { t: Translate; open: Open }) {
 function Events({ t, open }: { t: Translate; open: Open }) {
   const [filter, setFilter] = useState("All");
   const items = filterEntries(events, filter);
-  const carousel = useCarousel(items.length, true);
+  const carousel = useCarousel(items.length, true, "center");
   return (
     <section id="events" className="section container-wide">
       <SectionHead
@@ -1069,8 +1090,8 @@ function Events({ t, open }: { t: Translate; open: Open }) {
         onFocusCapture={() => carousel.setPaused(true)}
       >
         <div className="carousel-track">
-          {items.map((e) => (
-            <article className="event-card carousel-slide" key={e.id}>
+          {items.map((e, i) => (
+            <article className="event-card carousel-slide" key={e.id} data-active={i === carousel.index}>
               <div className="event-image">
                 <img
                   loading="lazy"
@@ -1576,19 +1597,39 @@ function Detail({
       >
         {entry && (
           <>
-            <img
-              className={`detail-photo ${isGallery ? "lightbox-photo" : ""}`}
-              src={images[entry.image]}
-              alt={t(entry.title) + " · Representative visual"}
-              onTouchStart={(e) => {
-                touch.current = e.touches[0]?.clientX ?? 0;
-              }}
-              onTouchEnd={(e) => {
-                if (!isGallery) return;
-                const delta = (e.changedTouches[0]?.clientX ?? touch.current) - touch.current;
-                if (Math.abs(delta) > 45) step(delta < 0 ? 1 : -1);
-              }}
-            />
+            {entry.mediaType === "video" && entry.mediaUrl ? (
+              <video
+                className={`detail-photo detail-video ${isGallery ? "lightbox-photo" : ""}`}
+                controls
+                playsInline
+                preload="metadata"
+                poster={images[entry.image]}
+                onTouchStart={(e) => {
+                  touch.current = e.touches[0]?.clientX ?? 0;
+                }}
+                onTouchEnd={(e) => {
+                  if (!isGallery) return;
+                  const delta = (e.changedTouches[0]?.clientX ?? touch.current) - touch.current;
+                  if (Math.abs(delta) > 45) step(delta < 0 ? 1 : -1);
+                }}
+              >
+                <source src={entry.mediaUrl} />
+              </video>
+            ) : (
+              <img
+                className={`detail-photo ${isGallery ? "lightbox-photo" : ""}`}
+                src={images[entry.image]}
+                alt={t(entry.title) + " · Representative visual"}
+                onTouchStart={(e) => {
+                  touch.current = e.touches[0]?.clientX ?? 0;
+                }}
+                onTouchEnd={(e) => {
+                  if (!isGallery) return;
+                  const delta = (e.changedTouches[0]?.clientX ?? touch.current) - touch.current;
+                  if (Math.abs(delta) > 45) step(delta < 0 ? 1 : -1);
+                }}
+              />
+            )}
             <div className="detail-body">
               <span className="eyebrow text-primary">{t(entry.category)}</span>
               <DialogTitle>{t(entry.title)}</DialogTitle>
@@ -1766,10 +1807,15 @@ function AboutVillage({ t }: { t: Translate }) {
   );
 }
 function FocusAreas({ t }: { t: Translate }) {
-  const [ref, api] = useEmblaCarousel({ loop: true, align: "start", dragFree: false });
+  const [ref, api] = useEmblaCarousel({ loop: true, align: "center", containScroll: false, duration: 38 });
   const [paused, setPaused] = useState(false);
   const [selected, setSelected] = useState(0);
-  const slides = [...focusAreas, ...focusAreas];
+  const interactionTimer = useRef<number | undefined>(undefined);
+  const pauseForInteraction = () => {
+    setPaused(true);
+    if (interactionTimer.current !== undefined) window.clearTimeout(interactionTimer.current);
+    interactionTimer.current = window.setTimeout(() => setPaused(false), 6000);
+  };
   useEffect(() => {
     if (!api) return;
     const select = () => setSelected(api.selectedScrollSnap() % focusAreas.length);
@@ -1779,32 +1825,52 @@ function FocusAreas({ t }: { t: Translate }) {
       api.off("select", select);
     };
   }, [api]);
+  useEffect(() => () => {
+    if (interactionTimer.current !== undefined) window.clearTimeout(interactionTimer.current);
+  }, []);
   useEffect(() => {
     if (!api || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = setInterval(() => api.scrollNext(), 4500);
+    const timer = setInterval(() => api.scrollNext(), 5200);
     return () => clearInterval(timer);
   }, [api, paused]);
   return (
     <section id="focus" className="section focus-section">
       <div className="container-wide">
-        <HomeHead title={c("Our Focus Areas", "మన ముఖ్య రంగాలు")} line={c("Three paths, one shared future. Choose where to begin.", "మూడు దారులు, ఒకే భవిష్యత్తు. ఎక్కడ మొదలుపెడతారో ఎంచుకోండి.")} t={t}>
-          <CarouselControls t={t} prev={() => api?.scrollPrev()} next={() => api?.scrollNext()} />
+        <HomeHead title={c("Our Focus Areas", "మన ముఖ్య రంగాలు")} line={c("Three paths. One shared future.", "మూడు మార్గాలు. ఒకే భవిష్యత్తు.")} t={t}>
+          <CarouselControls t={t} prev={() => { pauseForInteraction(); api?.scrollPrev(); }} next={() => { pauseForInteraction(); api?.scrollNext(); }} />
         </HomeHead>
         <div
           className="carousel-viewport focus-viewport"
           ref={ref}
+          aria-roledescription="carousel"
+          aria-label={t(c("Our focus areas", "మన ముఖ్య రంగాలు"))}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocusCapture={() => setPaused(true)}
           onBlurCapture={() => setPaused(false)}
+          onPointerDown={pauseForInteraction}
+          onPointerUp={pauseForInteraction}
         >
           <div className="carousel-track">
-            {slides.map((f, i) => (
-              <div className="focus-slide" key={`${f.path}-${i}`} aria-hidden={i >= focusAreas.length ? true : undefined}>
-                <Link to={f.path} className="focus-card" tabIndex={i >= focusAreas.length ? -1 : undefined}>
+            {focusAreas.map((f, i) => {
+              const active = i === selected;
+              return (
+              <div className={`focus-slide ${active ? "is-active" : ""}`} key={f.path} aria-hidden={!active}>
+                <Link
+                  to={f.path}
+                  className="focus-card"
+                  tabIndex={active ? 0 : -1}
+                  onClick={(event) => {
+                    if (!active) {
+                      event.preventDefault();
+                      pauseForInteraction();
+                      api?.scrollTo(i);
+                    }
+                  }}
+                >
                   <img loading="lazy" src={images[f.image]} alt={`${t(f.title)} · Representative visual`} />
                   <div className="focus-card-body">
-                    <span className="focus-number">0{(i % focusAreas.length) + 1}</span>
+                    <span className="focus-number">0{i + 1}</span>
                     <h3>{t(f.title)}</h3>
                     <p>{t(f.line)}</p>
                     <span className="focus-cta">
@@ -1813,13 +1879,19 @@ function FocusAreas({ t }: { t: Translate }) {
                   </div>
                 </Link>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
-        <div className="focus-dots" aria-hidden="true">
+        <div className="focus-carousel-footer">
+          <span className="sample">0{selected + 1} / 0{focusAreas.length}</span>
+          <div className="focus-dots">
           {focusAreas.map((f, i) => (
-            <span key={f.path} className={i === selected ? "active" : ""} />
+            <Button key={f.path} type="button" variant="editorial" aria-label={`${t(c("Show", "చూపించు"))} ${t(f.title)}`} aria-current={i === selected} onClick={() => { pauseForInteraction(); api?.scrollTo(i); }}>
+              <span />
+            </Button>
           ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1897,18 +1969,34 @@ function ActivitiesPreview({ t, open }: { t: Translate; open: Open }) {
   );
 }
 function ComingSoon({ t, open }: { t: Translate; open: Open }) {
+  const carousel = useCarousel(futureInitiatives.length, false, "start");
   return (
     <section id="coming-soon" className="section future-section">
       <div className="container-wide">
-        <HomeHead title={c("Coming Soon", "త్వరలో")} line={c("The future we are building — ideas still being planned with the community.", "మనం నిర్మించే రేపు — కమ్యూనిటీతో ఇంకా ప్రణాళికలో ఉన్న ఆలోచనలు.")} t={t} />
-        <div className="soon-grid">
-          {futureInitiatives.map((f, i) => (
-            <button type="button" className="soon-card" key={f.id} onClick={() => open(f)}>
-              <span className="soon-number">0{i + 1}</span>
-              <strong>{t(f.title)}</strong>
-              <small>{f.status && t(f.status)}</small>
-            </button>
-          ))}
+        <HomeHead title={c("Coming Soon", "త్వరలో")} line={c("The future we are building — ideas still being planned with the community.", "మనం నిర్మించే రేపు — కమ్యూనిటీతో ఇంకా ప్రణాళికలో ఉన్న ఆలోచనలు.")} t={t}>
+          <CarouselControls t={t} prev={() => carousel.api?.scrollPrev()} next={() => carousel.api?.scrollNext()} />
+        </HomeHead>
+        <div className="carousel-viewport soon-viewport" ref={carousel.ref}>
+          <div className="carousel-track">
+            {futureInitiatives.map((f, i) => (
+              <div className="carousel-slide soon-slide" key={f.id}>
+                <Button type="button" variant="editorial" className="soon-card" onClick={() => open(f)} aria-label={`${t(f.status ?? c("Future initiative", "భవిష్యత్తు కార్యక్రమం"))}: ${t(f.title)}`}>
+                  <img loading="lazy" src={images[f.image]} alt="" />
+                  <span className="soon-shade" aria-hidden="true" />
+                  <span className="soon-number">0{i + 1}</span>
+                  <span className="soon-status">{f.status && t(f.status)}</span>
+                  <strong>{t(f.title)}</strong>
+                  <span className="soon-description">{t(f.description)}</span>
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="carousel-progress soon-progress">
+          <span className="sample">{t(c("Proposed ideas · not yet available", "ప్రతిపాదిత ఆలోచనలు · ఇంకా అందుబాటులో లేవు"))}</span>
+          <div className="progress-track" aria-hidden="true">
+            {carousel.snaps.map((_, i) => <span key={i} className={i === carousel.index ? "active" : ""} />)}
+          </div>
         </div>
       </div>
     </section>
@@ -1923,7 +2011,7 @@ function GalleryPreview({ t, onSelect }: { t: Translate; onSelect: (entry: Entry
       </HomeHead>
       <div className="gallery-grid gallery-preview-grid">
         {items.map((g) => (
-          <Button variant="editorial" className="gallery-item" key={g.id} aria-label={`${t(c("Open photograph", "ఫోటో తెరవండి"))}: ${t(g.title)}`} onClick={() => onSelect(g, items)}>
+          <Button variant="editorial" className="gallery-item reveal" key={g.id} aria-label={`${t(c("Open photograph", "ఫోటో తెరవండి"))}: ${t(g.title)}`} onClick={() => onSelect(g, items)}>
             <img src={images[g.image]} loading="lazy" alt={t(g.title) + " · Representative visual"} />
             <span>{t(g.title)}</span>
           </Button>
@@ -1958,17 +2046,19 @@ export function VillageExperience() {
 function PageHero({ page, t }: { page: PageKey; t: Translate }) {
   const info = pageIntros[page];
   return (
-    <section id="home" className="page-hero">
+    <section id="home" className="page-hero" data-page={page}>
       <img className="page-hero-photo" src={images[info.image]} alt="" fetchPriority="high" />
       <div className="hero-shade" aria-hidden="true" />
       <div className="container-wide page-hero-body">
-        <nav className="crumbs" aria-label="Breadcrumb">
-          <Link to="/">{t(c("Home", "హోమ్"))}</Link>
-          <span aria-hidden="true">/</span>
-          <span>{t(info.title)}</span>
-        </nav>
-        <h1>{t(info.title)}</h1>
-        <p>{t(info.line)}</p>
+        <div className="page-hero-copy">
+          <nav className="crumbs" aria-label="Breadcrumb">
+            <Link to="/">{t(c("Home", "హోమ్"))}</Link>
+            <span aria-hidden="true">/</span>
+            <span>{t(info.title)}</span>
+          </nav>
+          <h1>{t(info.title)}</h1>
+          <p>{t(info.line)}</p>
+        </div>
       </div>
     </section>
   );

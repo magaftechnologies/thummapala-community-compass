@@ -29,6 +29,10 @@ describe("Village content safeguards", () => {
       expect(item.description.en).toContain("not an official recruitment");
     }
   });
+  it("keeps every illustrative success story clearly marked as demo content", () => {
+    expect(stories).toHaveLength(5);
+    expect(stories.every((story) => story.isDemo)).toBe(true);
+  });
   it("keeps every future initiative proposed or coming soon", () => {
     expect(futureInitiatives).toHaveLength(5);
     for (const item of futureInitiatives) {

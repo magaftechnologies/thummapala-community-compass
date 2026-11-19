@@ -26,6 +26,8 @@ export type Entry = {
   category: Copy;
   image: ImageKey;
   isDemo: boolean;
+  mediaType?: "image" | "video";
+  mediaUrl?: string;
   status?: Copy;
   date?: string;
   location?: Copy;

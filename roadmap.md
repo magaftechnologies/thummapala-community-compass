@@ -9,3 +9,4 @@
 - [x] Recommend next step after remix (third ask).
 - [x] Final homepage restructure: short story homepage, equal focus-card carousel linking to inner pages, dedicated pages (/our-village, /education, /agrotech, /sports, /opportunities, /events, /activities, /stories, /gallery, /contact).
 - [x] Recommend next step after remix (fourth ask).
+- [x] Polish focus, story, event and future carousels; improve gallery and inner-page transitions while keeping the current homepage structure.
