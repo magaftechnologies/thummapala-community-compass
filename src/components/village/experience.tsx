@@ -2220,7 +2220,7 @@ function LibraryPage({ t, onSelect }: { t: Translate; onSelect: (entry: Entry, i
         <div className="container-wide library-learning-copy">
           <div className="reveal">
             <p className="eyebrow">{t(c("A PLACE FOR LEARNING", "అభ్యాసానికి ఒక స్థలం"))}</p>
-            <h2>{t(c("Reading brings generations together.", "చదువు తరాలను కలుపుతుంది."))}</h2>
+            <h2>{t(c("Learning grows through reading.", "చదవడం ద్వారా అభ్యాసం పెరుగుతుంది."))}</h2>
             <p className="section-copy">
               {t(c(
                 "Readers, students, children, books and community participation are at the heart of these moments.",
@@ -2279,7 +2279,7 @@ function LibraryPage({ t, onSelect }: { t: Translate; onSelect: (entry: Entry, i
         <div className="library-future-copy reveal">
           <p className="eyebrow">{t(c("FUTURE VISION", "భవిష్యత్ దృష్టి"))}</p>
           <h2>{t(c("Growing with Our Community", "మన సమాజంతో కలిసి ఎదుగుతూ"))}</h2>
-          <p className="section-copy">{t(c("Looking ahead, the Library could continue to grow as a space for reading, student learning, community knowledge and educational activities, with possibilities for digital learning in the future.", "భవిష్యత్తులో చదవడం, విద్యార్థుల అభ్యాసం, సమాజ జ్ఞానం, విద్యా కార్యక్రమాలకు గ్రంథాలయం మరింత తోడ్పడే స్థలంగా ఎదగవచ్చు. డిజిటల్ అభ్యాస అవకాశాలనూ పరిశీలించవచ్చు."))}</p>
+          <p className="section-copy">{t(c("Looking ahead, the Library could become a stronger space for reading, student learning, community knowledge and educational activities, with possibilities for digital learning in the future.", "భవిష్యత్తులో చదవడం, విద్యార్థుల అభ్యాసం, సమాజ జ్ఞానం, విద్యా కార్యక్రమాలకు గ్రంథాలయం మరింత బలమైన స్థలంగా మారవచ్చు. డిజిటల్ అభ్యాస అవకాశాలనూ పరిశీలించవచ్చు."))}</p>
           <p className="sample">{t(c("These are possibilities for the future, not existing services.", "ఇవి భవిష్యత్ అవకాశాలు మాత్రమే; ప్రస్తుతం అందుబాటులో ఉన్న సేవలు కావు."))}</p>
         </div>
       </section>
