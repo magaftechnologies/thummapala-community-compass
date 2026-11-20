@@ -5,7 +5,7 @@ import { routeTree } from "@/routeTree.gen";
 import { focusAreas, heroSlides, innerPaths } from "@/lib/village-data";
 
 const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
-const required = ["/our-village", "/education", "/agrotech", "/sports", "/opportunities", "/events", "/activities", "/stories", "/gallery", "/contact"];
+const required = ["/our-village", "/education", "/agrotech", "/sports", "/library", "/opportunities", "/events", "/activities", "/stories", "/gallery", "/contact"];
 
 describe("Site pages", () => {
   it("lists every required inner page in the navigation", () => {
@@ -16,11 +16,12 @@ describe("Site pages", () => {
     expect(leaf?.routeId).not.toBe(rootRouteId);
     expect(leaf?.routeId).toBe(path);
   });
-  it("sends Education, Agrotech and Sports focus cards to their own pages", () => {
+  it("sends each focus card to its own page", () => {
     expect(focusAreas.map((f) => [f.title.en, f.path])).toEqual([
       ["Education", "/education"],
       ["Agrotech", "/agrotech"],
       ["Sports", "/sports"],
+      ["Library", "/library"],
     ]);
   });
   it("uses the matching approved hero image for each focus area", () => {
@@ -29,6 +30,7 @@ describe("Site pages", () => {
       ["Education", heroImageByTitle.get("Education")],
       ["Agrotech", heroImageByTitle.get("Agrotech")],
       ["Sports", heroImageByTitle.get("Sports")],
+      ["Library", heroImageByTitle.get("Thummapala Library")],
     ]);
   });
 });

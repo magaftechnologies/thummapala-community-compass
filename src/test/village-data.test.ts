@@ -15,6 +15,7 @@ import {
   agricultureInitiatives,
   sportsEntries,
   activities,
+  libraryPhotos,
   events,
   announcements,
   gallery,
@@ -39,7 +40,7 @@ describe("Village content safeguards", () => {
     ]);
     expect(opportunityCategories.every((category) => category.description.en.length > 0)).toBe(true);
   });
-  it("uses accessible, category-specific visuals on the three detailed pages", () => {
+  it("uses accessible, category-specific visuals on detailed pages", () => {
     expect(pageIntros.education.heroImageUrl).toBe("/images/digital-thummapala-education.png");
     expect(pageIntros.education.heroAlt?.en).toBe("Thummapala school and students");
     expect(pageIntros.education.contentImageUrl).toBe("/images/thummapala-story-school-community.png");
@@ -48,12 +49,18 @@ describe("Village content safeguards", () => {
     );
 
     expect(pageIntros.agrotech.heroImageUrl).toBe("/images/digital-thummapala-agrotech.png");
-    expect(agricultureInitiatives.every((item) => item.imageUrl === pageIntros.agrotech.heroImageUrl)).toBe(true);
+    expect(agricultureInitiatives.every((item) => item.imageUrl?.startsWith("/images/"))).toBe(true);
+    expect(new Set(agricultureInitiatives.map((item) => item.imageUrl)).size).toBeGreaterThan(1);
 
     expect(pageIntros.sports.heroImageUrl).toBe("/images/thummapala-impact-pet-master.png");
     expect(pageIntros.sports.heroAlt?.en).toBe("Thummapala PT Master supporting Kho-Kho sports");
     expect(pageIntros.sports.contentImageUrl).toBe("/images/digital-thummapala-sports.png");
     expect(sportsEntries.every((item) => item.imageUrl?.startsWith("/images/") && item.alt?.en)).toBe(true);
+
+    expect(pageIntros.library.title.en).toBe("Thummapala Library");
+    expect(pageIntros.library.line.en).toBe("A space where books, learning and community come together.");
+    expect(pageIntros.library.heroImageUrl).toBe("/images/thummapala-library-community-celebration.png");
+    expect(pageIntros.library.heroAlt?.en).toContain("Children and community members");
   });
   it("keeps the six supplied success stories factual and accessible", () => {
     expect(stories).toHaveLength(6);
@@ -69,9 +76,10 @@ describe("Village content safeguards", () => {
   });
   it("keeps impact profiles and the configurable video placeholder ready", () => {
     expect(impactPeople.map((person) => [person.name.en, person.role.en])).toEqual([
-      ["PET Master", "Physical Education & Kho-Kho Mentor"],
-      ["Some Ramraju", "Community Contributor"],
-      ["Ajay", "Digital Creator"],
+      ["Peela Veer Nayadu", "Physical Education Teacher · P.T. Sir"],
+      ["Adari Govindarao", "School Support · Education Support"],
+      ["Ajay Kamadhenu", "Digital Marketer & Digital Creator"],
+      ["Pethakam Setti Balaraam", "Chairman"],
     ]);
     expect(impactVideoUrl).toContain("YOUR_VIDEO_ID");
     expect(getYouTubeVideoId(impactVideoUrl)).toBeNull();
@@ -96,10 +104,13 @@ describe("Village content safeguards", () => {
   });
   it("includes each collected Thummapala asset once in the gallery", () => {
     const galleryImages = gallery.map((item) => item.imageUrl);
-    expect(gallery).toHaveLength(20);
+    expect(gallery).toHaveLength(26);
     expect(new Set(galleryImages).size).toBe(gallery.length);
     expect(gallery.every((item) => item.alt?.en && item.description.en.length > 0)).toBe(true);
     expect(gallery.filter((item) => item.status?.en === "Coming Soon · Future Vision")).toHaveLength(6);
+    expect(gallery.filter((item) => item.category.en === "Library & Learning")).toHaveLength(6);
+    expect(libraryPhotos).toHaveLength(6);
+    expect(libraryPhotos.every((photo) => photo.alt.en.length > 0 && galleryImages.includes(photo.image))).toBe(true);
     expect(galleryImages).toEqual([
       "/images/digital-thummapala-village.png",
       "/images/digital-thummapala-agrotech.png",
@@ -121,6 +132,12 @@ describe("Village content safeguards", () => {
       "/images/coming-soon-quantum-emerging-tech.png",
       "/images/coming-soon-career-development-hub.png",
       "/images/coming-soon-thummapala-library.png",
+      "/images/thummapala-library-week-panel.png",
+      "/images/thummapala-library-telugu-panel.png",
+      "/images/thummapala-library-community-celebration.png",
+      "/images/thummapala-library-week-celebration.png",
+      "/images/thummapala-library-award-ceremony.png",
+      "/images/thummapala-library-telugu-week.png",
     ]);
   });
   it("uses existing photos for activities and marks every event concept as unconfirmed", () => {
@@ -131,13 +148,20 @@ describe("Village content safeguards", () => {
       "Supporting Students",
       "Community Participation",
       "Agriculture & the Land",
+      "Thummapala Library · Future Vision",
+      "Community Library Week",
+      "Library Week Gathering",
+      "Readers and Community",
+      "Library Week Activities",
+      "Community Recognition",
+      "Library Week Programme",
     ]);
     expect(
       activities.every(
         (activity) =>
           activity.image.startsWith("/images/") &&
           activity.alt.en.length > 0 &&
-          activity.label.en.startsWith("PHOTO STORY"),
+          (activity.label.en.startsWith("PHOTO STORY") || activity.label.en.startsWith("FUTURE VISION")),
       ),
     ).toBe(true);
     expect(events.map((event) => event.category.en)).toEqual([
@@ -160,16 +184,16 @@ describe("Village content safeguards", () => {
     expect(events.every((event) => event.image.startsWith("/images/") && event.alt.en.length > 0)).toBe(true);
   });
   it("provides the requested content minimums", () => {
-    expect(heroSlides.length).toBe(5);
+    expect(heroSlides.length).toBe(6);
     expect(programs.length).toBeGreaterThanOrEqual(6);
     expect(mentors.length).toBe(4);
     expect(stories.length).toBe(6);
     expect(agricultureInitiatives.length).toBe(4);
     expect(sportsEntries.length).toBe(5);
-    expect(activities.length).toBe(6);
+    expect(activities.length).toBe(13);
     expect(events.length).toBe(6);
     expect(announcements.length).toBe(5);
-    expect(gallery.length).toBe(20);
+    expect(gallery.length).toBe(26);
   });
   it("keeps the hero slides in the requested order with accessible visuals and copy", () => {
     expect(
@@ -214,6 +238,13 @@ describe("Village content safeguards", () => {
         title: "Thummapala",
         subtitle: "A village connected to agriculture, people and industry.",
         alt: "Sugar factory and sugarcane transport near Thummapala",
+        mobilePosition: undefined,
+      },
+      {
+        image: "/images/thummapala-library-community-celebration.png",
+        title: "Thummapala Library",
+        subtitle: "A place to read, learn and grow.",
+        alt: "Children and community members gathered with books at a Thummapala library celebration",
         mobilePosition: undefined,
       },
     ]);

@@ -45,6 +45,7 @@ export type SitePath =
   | "/education"
   | "/agrotech"
   | "/sports"
+  | "/library"
   | "/opportunities"
   | "/events"
   | "/activities"
@@ -57,6 +58,7 @@ export const nav = [
   ["/education", c("Education", "చదువు")],
   ["/agrotech", c("Agrotech", "వ్యవసాయం")],
   ["/sports", c("Sports", "క్రీడలు")],
+  ["/library", c("Library", "గ్రంథాలయం")],
   ["/opportunities", c("Opportunities", "అవకాశాలు")],
   ["/events", c("Events", "కార్యక్రమాలు")],
   ["/gallery", c("Gallery", "ఫోటోలు")],
@@ -92,6 +94,14 @@ export const focusAreas = [
     title: c("Sports", "క్రీడలు"),
     line: c("Building confidence through sport.", "క్రీడలతో ఆత్మవిశ్వాసం పెరుగుతుంది."),
     cta: c("Explore Sports", "క్రీడలు చూడండి"),
+  },
+  {
+    path: "/library",
+    image: "/images/thummapala-library-community-celebration.png",
+    alt: c("Thummapala children and community members gathered with books", "పుస్తకాలతో తుమ్మపాల పిల్లలు, సమాజ సభ్యుల సమావేశం"),
+    title: c("Library", "గ్రంథాలయం"),
+    line: c("A place to read, learn and grow.", "చదవడానికి, నేర్చుకోవడానికి, ఎదగడానికి ఒక స్థలం."),
+    cta: c("Explore Library", "గ్రంథాలయాన్ని చూడండి"),
   },
 ] as const satisfies readonly {
   path: SitePath;
@@ -146,6 +156,7 @@ export type PageKey =
   | "education"
   | "agrotech"
   | "sports"
+  | "library"
   | "opportunities"
   | "events"
   | "activities"
@@ -195,6 +206,13 @@ export const pageIntros: Record<
     contentImageUrl: "/images/digital-thummapala-sports.png",
     contentAlt: c("Kho-Kho players in action in Thummapala", "తుమ్మపాలలో ఖో-ఖో ఆడుతున్న క్రీడాకారులు"),
     contentCaption: c("Kho-Kho in Thummapala", "తుమ్మపాలలో ఖో-ఖో"),
+  },
+  library: {
+    title: c("Thummapala Library", "తుమ్మపాల గ్రంథాలయం"),
+    line: c("A space where books, learning and community come together.", "పుస్తకాలు, అభ్యాసం, సమాజం కలిసే స్థలం."),
+    image: "village",
+    heroImageUrl: "/images/thummapala-library-community-celebration.png",
+    heroAlt: c("Children and community members gathered with books at a Thummapala library celebration", "తుమ్మపాల గ్రంథాలయ వేడుకలో పుస్తకాలతో కూడిన పిల్లలు, సమాజ సభ్యులు"),
   },
   opportunities: {
     title: c("New Opportunities Are Coming", "కొత్త అవకాశాలు త్వరలో"),
@@ -259,6 +277,15 @@ export const heroSlides = [
     cta: c("Explore Thummapala", "తుమ్మపాలను తెలుసుకోండి"),
     path: "/our-village",
     category: c("Sugar factory", "చక్కెర కర్మాగారం"),
+  },
+  {
+    image: "/images/thummapala-library-community-celebration.png",
+    alt: c("Children and community members gathered with books at a Thummapala library celebration", "తుమ్మపాల గ్రంథాలయ వేడుకలో పుస్తకాలతో కూడిన పిల్లలు, సమాజ సభ్యులు"),
+    title: c("Thummapala Library", "తుమ్మపాల గ్రంథాలయం"),
+    subtitle: c("A place to read, learn and grow.", "చదవడానికి, నేర్చుకోవడానికి, ఎదగడానికి ఒక స్థలం."),
+    cta: c("Explore the Library", "గ్రంథాలయాన్ని చూడండి"),
+    path: "/library",
+    category: c("Library & Learning", "గ్రంథాలయం & అభ్యాసం"),
   },
 ] satisfies {
   image: string;
@@ -441,36 +468,47 @@ export const stories = [
 export const impactPeople = [
   {
     id: "pet-master",
-    name: c("PET Master", "పీ.ఈ.టి. మాస్టర్"),
-    role: c("Physical Education & Kho-Kho Mentor", "శారీరక విద్య, ఖో-ఖో మార్గదర్శి"),
+    name: c("Peela Veer Nayadu", "పీల వీర్ నాయుడు"),
+    role: c("Physical Education Teacher · P.T. Sir", "శారీరక విద్య ఉపాధ్యాయుడు · పి.టి. సార్"),
     description: c(
-      "Supporting young athletes through physical education, guidance and Kho-Kho training, helping students develop discipline, confidence and team spirit.",
-      "శారీరక విద్య, మార్గదర్శనం, ఖో-ఖో శిక్షణ ద్వారా యువ క్రీడాకారులకు తోడ్పడుతూ, క్రమశిక్షణ, ఆత్మవిశ్వాసం, జట్టు స్ఫూర్తిని పెంపొందించడంలో సహాయపడుతున్నారు.",
+      "Contributes to physical education and sports training, especially Kho-Kho.",
+      "శారీరక విద్య, క్రీడా శిక్షణకు, ముఖ్యంగా ఖో-ఖోకు తోడ్పడుతున్నారు.",
     ),
     image: "/images/thummapala-impact-pet-master.png",
-    alt: c("PET Master supporting Kho-Kho training", "ఖో-ఖో శిక్షణకు మార్గదర్శనం చేస్తున్న పీ.ఈ.టి. మాస్టర్"),
+    alt: c("Peela Veer Nayadu supporting physical education and Kho-Kho training", "శారీరక విద్య, ఖో-ఖో శిక్షణకు తోడ్పడుతున్న పీల వీర్ నాయుడు"),
   },
   {
-    id: "some-ramraju",
-    name: c("Some Ramraju", "సోమే రామరాజు"),
-    role: c("Community Contributor", "సమాజ సహకారి"),
+    id: "adari-govindarao",
+    name: c("Adari Govindarao", "అడారి గోవిందరావు"),
+    role: c("School Support · Education Support", "పాఠశాల సహాయం · విద్యా సహాయం"),
     description: c(
-      "A person connected to the wider community journey, representing the individuals whose support and involvement help strengthen local initiatives and progress.",
-      "స్థానిక కార్యక్రమాలు, పురోగతికి తోడ్పడే వ్యక్తుల భాగస్వామ్యాన్ని ప్రతిబింబిస్తూ, సమాజ ప్రయాణంతో అనుబంధం కలిగిన వ్యక్తి.",
+      "Contributes to school and education support in Thummapala.",
+      "తుమ్మపాలలో పాఠశాల, విద్యా సహాయానికి తోడ్పడుతున్నారు.",
     ),
     image: "/images/thummapala-impact-some-ramraju.png",
-    alt: c("Some Ramraju", "సోమే రామరాజు"),
+    alt: c("Adari Govindarao supporting school and education", "పాఠశాల, విద్యకు తోడ్పడుతున్న అడారి గోవిందరావు"),
   },
   {
     id: "ajay",
-    name: c("Ajay", "అజయ్"),
-    role: c("Digital Creator", "డిజిటల్ సృష్టికర్త"),
+    name: c("Ajay Kamadhenu", "అజయ్ కామధేనూ"),
+    role: c("Digital Marketer & Digital Creator", "డిజిటల్ మార్కెటర్ & డిజిటల్ సృష్టికర్త"),
     description: c(
-      "The creative and digital force behind the Thummapala digital experience, contributing to the website, visual storytelling and digital content that help bring the village journey online.",
-      "తుమ్మపాల డిజిటల్ అనుభవానికి సృజనాత్మకంగా తోడ్పడుతూ, వెబ్‌సైట్, దృశ్య కథనం, గ్రామ ప్రయాణాన్ని ఆన్‌లైన్‌లో పరిచయం చేసే డిజిటల్ కంటెంట్‌ను రూపొందిస్తున్నారు.",
+      "Contributes to Digital Thummapala through digital transformation and online work.",
+      "డిజిటల్ రూపాంతరం, ఆన్‌లైన్ పనుల ద్వారా డిజిటల్ తుమ్మపాలకు తోడ్పడుతున్నారు.",
     ),
     image: "/images/thummapala-impact-ajay.png",
-    alt: c("Ajay digital creator", "అజయ్ డిజిటల్ సృష్టికర్త"),
+    alt: c("Ajay Kamadhenu, digital creator", "డిజిటల్ సృష్టికర్త అజయ్ కామధేనూ"),
+  },
+  {
+    id: "pethakam-setti-balaraam",
+    name: c("Pethakam Setti Balaraam", "పెతకంశెట్టి బాలరాం"),
+    role: c("Chairman", "ఛైర్మన్"),
+    description: c(
+      "Serves as Chairman in the Thummapala community.",
+      "తుమ్మపాల సమాజంలో ఛైర్మన్‌గా సేవలందిస్తున్నారు.",
+    ),
+    image: "/images/thummapala-impact-pethakam-setti-balaraam.jpeg",
+    alt: c("Pethakam Setti Balaraam", "పెతకంశెట్టి బాలరాం"),
   },
 ] as const;
 export const impactVideoUrl = "https://www.youtube.com/watch?v=YOUR_VIDEO_ID";
@@ -505,8 +543,12 @@ export const agricultureInitiatives = [
     c("Agrotech", "వ్యవసాయం"),
     "agriculture",
     {
-      imageUrl: "/images/digital-thummapala-agrotech.png",
-      alt: c("Agriculture and farming in Thummapala", "తుమ్మపాలలో వ్యవసాయం, సాగు"),
+      imageUrl: i % 2 === 0
+        ? "/images/digital-thummapala-sugar-factory.png"
+        : "/images/digital-thummapala-agrotech.png",
+      alt: i % 2 === 0
+        ? c("Sugar factory and sugarcane transport near Thummapala", "తుమ్మపాల సమీపంలోని చక్కెర కర్మాగారం, చెరకు రవాణా")
+        : c("Agriculture and farming in Thummapala", "తుమ్మపాలలో వ్యవసాయం, సాగు"),
     },
   ),
 );
@@ -556,6 +598,44 @@ export const sportsEntries = [
     },
   );
 });
+export const libraryPhotos = [
+  {
+    id: "library-week-panel",
+    title: c("Community Library Week", "సమాజ గ్రంథాలయ వారోత్సవం"),
+    image: "/images/thummapala-library-week-panel.png",
+    alt: c("Community speaker and panel at a Thummapala Library Week gathering", "తుమ్మపాల గ్రంథాలయ వారోత్సవ సమావేశంలో వక్త, ప్యానెల్"),
+  },
+  {
+    id: "library-telugu-panel",
+    title: c("Library Week Gathering", "గ్రంథాలయ వారోత్సవ సమావేశం"),
+    image: "/images/thummapala-library-telugu-panel.png",
+    alt: c("Panel and speaker at a Thummapala library celebration", "తుమ్మపాల గ్రంథాలయ వేడుకలో ప్యానెల్, వక్త"),
+  },
+  {
+    id: "library-community-celebration",
+    title: c("Readers and Community", "పాఠకులు, సమాజం"),
+    image: "/images/thummapala-library-community-celebration.png",
+    alt: c("Children holding books with community members at a Thummapala library gathering", "తుమ్మపాల గ్రంథాలయ సమావేశంలో పుస్తకాలతో పిల్లలు, సమాజ సభ్యులు"),
+  },
+  {
+    id: "library-week-celebration",
+    title: c("Library Week Activities", "గ్రంథాలయ వారోత్సవ కార్యక్రమాలు"),
+    image: "/images/thummapala-library-week-celebration.png",
+    alt: c("Community members at a Thummapala Library Week celebration", "తుమ్మపాల గ్రంథాలయ వారోత్సవంలో సమాజ సభ్యులు"),
+  },
+  {
+    id: "library-award-ceremony",
+    title: c("Community Recognition", "సమాజ గుర్తింపు"),
+    image: "/images/thummapala-library-award-ceremony.png",
+    alt: c("Community members gathered for a library recognition ceremony", "గ్రంథాలయ గుర్తింపు కార్యక్రమానికి సమావేశమైన సమాజ సభ్యులు"),
+  },
+  {
+    id: "library-telugu-week",
+    title: c("Library Week Programme", "గ్రంథాలయ వారోత్సవ కార్యక్రమం"),
+    image: "/images/thummapala-library-telugu-week.png",
+    alt: c("Speakers and community members at a Telugu Library Week gathering", "తెలుగు గ్రంథాలయ వారోత్సవ సమావేశంలో వక్తలు, సమాజ సభ్యులు"),
+  },
+] as const;
 export const activities = [
   {
     id: "kho-kho-team",
@@ -599,6 +679,20 @@ export const activities = [
     image: "/images/digital-thummapala-agrotech.png",
     alt: c("Agricultural landscape representing farming near Thummapala", "తుమ్మపాల సమీప వ్యవసాయాన్ని సూచించే పంట భూమి దృశ్యం"),
   },
+  {
+    id: "library-vision",
+    title: c("Thummapala Library · Future Vision", "తుమ్మపాల గ్రంథాలయం · భవిష్యత్ దృష్టి"),
+    label: c("FUTURE VISION · LEARNING", "భవిష్యత్ దృష్టి · అభ్యాసం"),
+    image: "/images/coming-soon-thummapala-library.png",
+    alt: c("Concept image for a proposed Thummapala community library, marked Coming Soon.", "త్వరలో అని గుర్తించిన ప్రతిపాదిత తుమ్మపాల కమ్యూనిటీ గ్రంథాలయ భావన చిత్రం."),
+  },
+  ...libraryPhotos.map((photo) => ({
+    id: photo.id,
+    title: photo.title,
+    label: c("PHOTO STORY · LIBRARY & LEARNING", "ఫోటో కథ · గ్రంథాలయం & అభ్యాసం"),
+    image: photo.image,
+    alt: photo.alt,
+  })),
 ] as const;
 export const events = [
   {
@@ -829,6 +923,15 @@ export const gallery = [
   galleryPhoto("quantum-technology", c("Quantum & Emerging Technology · Future Vision", "క్వాంటమ్ & అభివృద్ధి చెందుతున్న సాంకేతికత · భవిష్యత్ దృష్టి"), c("Future Vision", "భవిష్యత్ దృష్టి"), "/images/coming-soon-quantum-emerging-tech.png", c("Concept image for future emerging-technology learning in Thummapala, marked Coming Soon.", "త్వరలో అని గుర్తించిన తుమ్మపాలలో భవిష్యత్ సాంకేతిక అభ్యాస భావన చిత్రం."), true),
   galleryPhoto("career-hub", c("Career Development Hub · Future Vision", "కెరీర్ అభివృద్ధి కేంద్రం · భవిష్యత్ దృష్టి"), c("Future Vision", "భవిష్యత్ దృష్టి"), "/images/coming-soon-career-development-hub.png", c("Concept image for a proposed Thummapala career development hub, marked Coming Soon.", "త్వరలో అని గుర్తించిన ప్రతిపాదిత తుమ్మపాల కెరీర్ అభివృద్ధి కేంద్ర భావన చిత్రం."), true),
   galleryPhoto("library", c("Thummapala Library · Future Vision", "తుమ్మపాల గ్రంథాలయం · భవిష్యత్ దృష్టి"), c("Future Vision", "భవిష్యత్ దృష్టి"), "/images/coming-soon-thummapala-library.png", c("Concept image for a proposed Thummapala community library, marked Coming Soon.", "త్వరలో అని గుర్తించిన ప్రతిపాదిత తుమ్మపాల కమ్యూనిటీ గ్రంథాలయ భావన చిత్రం."), true),
+  ...libraryPhotos.map((photo) =>
+    galleryPhoto(
+      photo.id,
+      photo.title,
+      c("Library & Learning", "గ్రంథాలయం & అభ్యాసం"),
+      photo.image,
+      photo.alt,
+    ),
+  ),
 ];
 export const filterEntries = (entries: Entry[], category: string) =>
   category === "All" ? entries : entries.filter((e) => e.category.en === category);

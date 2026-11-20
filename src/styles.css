@@ -220,7 +220,7 @@ img { display: block; max-width: 100%; }
 .education-lead { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4); align-items: center; }
 .education-lead > div:first-child { grid-column: 1 / span 6; }
 .education-lead > div:last-child { grid-column: 8 / span 5; }
-.education-lead img { aspect-ratio: 4 / 3; width: 100%; object-fit: cover; border-radius: var(--radius-panel); }
+.education-lead img { aspect-ratio: 4 / 3; width: 100%; object-fit: contain; object-position: 50% 22%; background: var(--forest-night); border-radius: var(--radius-panel); }
 .journey { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-2); margin-block: var(--s-6); padding-top: var(--s-3); border-top: 1px solid var(--line-dark); }
 .journey-step { position: relative; padding-top: var(--s-2); }
 .journey-step:before { content: ""; position: absolute; top: calc(-1 * var(--s-3) - 5px); left: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--sunrise); }
@@ -268,7 +268,7 @@ img { display: block; max-width: 100%; }
 
 /* ===== Agrotech ===== */
 .full-photo-story { position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center; min-height: clamp(520px, 70vh, 720px); color: var(--on-dark); }
-.full-photo-story > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; }
+.full-photo-story > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 78% 50%; }
 .full-photo-story:after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, oklch(0.14 0.03 140 / .85), oklch(0.14 0.03 140 / .2) 70%); }
 .full-photo-content { max-width: 560px; padding-block: var(--s-7); }
 .full-photo-content .eyebrow { color: var(--sunrise); }
@@ -284,7 +284,7 @@ img { display: block; max-width: 100%; }
 .sports-layout { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4); align-items: center; margin-bottom: var(--s-6); }
 .sports-layout > div:first-child { grid-column: 1 / span 5; }
 .sports-layout > div:last-child { grid-column: 6 / span 7; }
-.sports-layout img { aspect-ratio: 16 / 11; width: 100%; object-fit: cover; border-radius: var(--radius-panel); }
+.sports-layout img { aspect-ratio: 16 / 11; width: 100%; object-fit: cover; object-position: 50% 30%; border-radius: var(--radius-panel); }
 .sports-section .eyebrow, .sports-section .telugu-line { color: var(--clay); }
 .sports-section .section-head h3 { font-family: var(--font-display); font-weight: 400; }
 .sport-item { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--border); border-radius: 14px; }
@@ -689,6 +689,10 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .impact-person-slide[aria-hidden="false"] .impact-person-card { transform: scale(1); }
 .impact-person-photo { display: grid; min-width: 0; min-height: 420px; place-items: center; overflow: hidden; background: var(--surface); }
 .impact-person-photo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.impact-person-slide:nth-child(1) .impact-person-photo img { object-position: 50% 30%; }
+.impact-person-slide:nth-child(2) .impact-person-photo img { object-position: 50% 22%; }
+.impact-person-slide:nth-child(3) .impact-person-photo img { object-position: 50% 25%; }
+.impact-person-slide:nth-child(4) .impact-person-photo img { object-position: 50% 18%; }
 .impact-person-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; min-width: 0; padding: clamp(22px, 4vw, 52px); }
 .impact-person-index { color: var(--teal); font-size: var(--t-caption); font-weight: 700; letter-spacing: 1.2px; }
 .impact-person-copy h3 { margin-top: var(--s-2); font-size: clamp(27px, 3.2vw, 42px); line-height: 1.12; overflow-wrap: anywhere; }
@@ -699,7 +703,7 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .impact-video-showcase { position: relative; width: 100%; aspect-ratio: 16 / 9; margin-top: var(--s-7); overflow: hidden; border-radius: var(--radius-panel); background: var(--forest-night); }
 .impact-video-showcase iframe { display: block; width: 100%; height: 100%; border: 0; }
 .impact-video-placeholder { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; color: var(--on-dark); text-align: center; }
-.impact-video-placeholder > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 38%; opacity: .48; transform: scale(1.015); transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .5s ease; }
+.impact-video-placeholder > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 78%; opacity: .48; transform: scale(1); transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .5s ease; }
 .impact-video-showcase:hover .impact-video-placeholder > img { transform: scale(1.045); opacity: .58; }
 .impact-video-shade { position: absolute; inset: 0; background: linear-gradient(90deg, oklch(0.12 0.025 140 / .72), oklch(0.12 0.025 140 / .32)), linear-gradient(0deg, oklch(0.12 0.025 140 / .6), transparent 75%); }
 .impact-video-content { position: relative; z-index: 1; display: flex; max-width: 660px; flex-direction: column; align-items: center; padding: var(--s-4); }
@@ -750,10 +754,10 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .soon-viewport { overflow: hidden; }
 .soon-slide { flex-basis: calc((100% - 2 * var(--s-3)) / 3); }
 .soon-card { position: relative; isolation: isolate; display: flex; width: 100%; min-height: 300px; flex-direction: column; align-items: flex-start; gap: var(--s-1); padding: var(--s-4); overflow: hidden; border: 1px solid var(--line-dark); border-radius: var(--radius-panel); background: var(--forest-deep); color: var(--on-dark); text-align: left; white-space: normal; box-shadow: 0 10px 30px oklch(0.12 0.025 140 / .14); transition: transform .4s ease, border-color .4s ease, box-shadow .4s ease; }
-.soon-card > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; opacity: .38; filter: saturate(.68); transform: scale(1.02); transition: opacity .5s ease, filter .5s ease, transform .8s ease; }
+.soon-card > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: contain; object-position: center; background: var(--forest-deep); opacity: .38; filter: saturate(.68); transform: scale(1); transition: opacity .5s ease, filter .5s ease, transform .8s ease; }
 .soon-shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, oklch(0.13 0.03 145 / .96), oklch(0.13 0.03 145 / .38)); transition: background .4s ease; }
 .soon-card:hover { transform: translateY(-5px); border-color: var(--sunrise); box-shadow: 0 18px 38px oklch(0.12 0.025 140 / .24); }
-.soon-card:hover > img { opacity: .55; filter: saturate(.88); transform: scale(1.055); }
+.soon-card:hover > img { opacity: .55; filter: saturate(.88); transform: scale(1.01); }
 .soon-number { position: relative; margin-bottom: auto; color: var(--sunrise); font-size: var(--t-caption); }
 .soon-status { position: relative; padding: 6px 9px; border: 1px solid var(--line-dark); border-radius: 999px; color: var(--on-dark-muted); font-size: 10px; letter-spacing: .6px; text-transform: uppercase; }
 .soon-card strong { position: relative; margin-top: var(--s-1); font-size: 20px; line-height: 1.28; }
@@ -775,9 +779,34 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .page-hero-copy { animation: page-copy-arrive .75s .12s ease both; }
 .crumbs { animation: page-copy-arrive .55s ease both; }
 .page-hero[data-page="agrotech"] .page-hero-photo { object-position: 78% center; }
-.page-hero[data-page="sports"] .page-hero-photo { object-position: 60% 35%; }
-.page-hero[data-page="education"] .page-hero-photo { object-position: 50% 42%; }
+.page-hero[data-page="sports"] .page-hero-photo { object-position: 50% 18%; }
+.page-hero[data-page="education"] .page-hero-photo { object-position: 50% 22%; }
+.page-hero[data-page="library"] .page-hero-photo { object-position: center 42%; }
 .page-enter > section:not(.page-hero) .reveal { animation: reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% entry 20%; }
+.library-about, .library-readers-grid { display: grid; align-items: center; gap: var(--s-6); }
+.library-about { grid-template-columns: .85fr 1.15fr; }
+.library-readers-grid { grid-template-columns: 1fr 1fr; }
+.library-learning-copy { max-width: 860px; }
+.library-about-copy h2, .library-learning-grid h2, .library-readers-grid h2, .library-future-copy h2 { max-width: 16ch; margin: 0 0 var(--s-3); font-family: var(--font-display); font-size: clamp(30px, 4vw, 52px); line-height: 1.08; }
+.library-about-copy .eyebrow, .library-learning-grid .eyebrow, .library-readers-grid .eyebrow, .library-future-copy .eyebrow { margin-bottom: var(--s-2); color: var(--primary); }
+.library-photo-button { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-card); background: var(--surface); padding: 0; text-align: left; }
+.library-photo-button img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; background: var(--surface); transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.library-photo-button span { position: absolute; right: 0; bottom: 0; left: 0; padding: 30px 18px 16px; background: linear-gradient(transparent, rgb(9 28 20 / 78%)); color: white; font-size: var(--t-small); font-weight: 600; }
+.library-photo-button:focus-visible { outline: 3px solid var(--sunrise); outline-offset: 3px; }
+.library-learning-section, .library-readers-section, .library-gallery-section { background: var(--surface); }
+.library-learning-list { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: var(--s-4) 0 0; padding: 0; color: var(--primary); font-size: var(--t-small); list-style: none; }
+.library-learning-list li::before { margin-right: 8px; color: var(--sunrise); content: "•"; }
+.library-photo-section .section-head { max-width: 680px; margin-bottom: var(--s-4); }
+.library-photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+.library-gallery-grid { columns: 3; column-gap: var(--s-3); }
+.library-gallery-grid .library-photo-button { height: auto; margin: 0 0 var(--s-3); aspect-ratio: auto; break-inside: avoid; }
+.library-gallery-grid .library-photo-button img { height: auto; }
+.library-future-section { padding-top: var(--s-7); padding-bottom: var(--s-7); }
+.library-future-copy { max-width: 820px; margin: 0 auto; padding: var(--s-6); border-left: 2px solid var(--sunrise); background: var(--surface); }
+.library-future-copy .sample { display: inline-block; margin-top: var(--s-2); }
+.page-hero[data-page="library"] .page-hero-copy .hero-cta { margin-top: var(--s-3); }
+.library-page-cta .page-cta-inner p { max-width: 52ch; margin-top: var(--s-1); color: var(--on-dark-muted); }
+.library-page .reveal { animation: reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% entry 20%; }
 .desktop-links a { position: relative; transition: color .25s ease; }
 .desktop-links a:after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; background: currentColor; content: ""; transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
 .desktop-links a:hover:after, .desktop-links a.active:after { transform: scaleX(1); }
@@ -794,6 +823,19 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
   .story-slide { flex-basis: 84%; }
   .activity-story-slide, .upcoming-event-slide { flex-basis: 82%; }
   .soon-slide { flex-basis: calc((100% - var(--s-3)) / 2); }
+  .library-about, .library-readers-grid { gap: var(--s-4); }
+}
+@media (max-width: 760px) {
+  .library-about, .library-readers-grid { grid-template-columns: 1fr; }
+  .library-photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .library-gallery-grid { columns: 2; }
+  .library-readers-grid .library-photo-button { order: 1; }
+  .library-readers-grid > div { order: 0; }
+}
+@media (max-width: 480px) {
+  .library-photo-grid { grid-template-columns: 1fr; }
+  .library-gallery-grid { columns: 1; }
+  .library-future-copy { padding: var(--s-4); }
 }
 @media (max-width: 860px) {
   .focus-slide { flex-basis: 70%; }
@@ -804,7 +846,7 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
   .soon-card { min-height: 280px; }
 }
 @media (max-width: 600px) {
-  .page-hero[data-page="sports"] .page-hero-photo { object-position: 62% 40%; }
+  .page-hero[data-page="sports"] .page-hero-photo { object-position: 50% 18%; }
   .focus-viewport { margin-inline: -20px; padding-inline: 20px; }
   .focus-slide { flex-basis: 72%; }
   .focus-card { height: 390px; }

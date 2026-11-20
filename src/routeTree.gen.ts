@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EducationRouteImport } from './routes/education'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as OurVillageRouteImport } from './routes/our-village'
 import { Route as SportsRouteImport } from './routes/sports'
@@ -56,6 +57,11 @@ const GalleryRoute = GalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesRoute = OpportunitiesRouteImport.update({
   id: '/opportunities',
   path: '/opportunities',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/education': typeof EducationRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/library': typeof LibraryRoute
   '/opportunities': typeof OpportunitiesRoute
   '/our-village': typeof OurVillageRoute
   '/sports': typeof SportsRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/education': typeof EducationRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/library': typeof LibraryRoute
   '/opportunities': typeof OpportunitiesRoute
   '/our-village': typeof OurVillageRoute
   '/sports': typeof SportsRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/education': typeof EducationRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/library': typeof LibraryRoute
   '/opportunities': typeof OpportunitiesRoute
   '/our-village': typeof OurVillageRoute
   '/sports': typeof SportsRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/education'
     | '/events'
     | '/gallery'
+    | '/library'
     | '/opportunities'
     | '/our-village'
     | '/sports'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/education'
     | '/events'
     | '/gallery'
+    | '/library'
     | '/opportunities'
     | '/our-village'
     | '/sports'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/education'
     | '/events'
     | '/gallery'
+    | '/library'
     | '/opportunities'
     | '/our-village'
     | '/sports'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   EducationRoute: typeof EducationRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  LibraryRoute: typeof LibraryRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
   OurVillageRoute: typeof OurVillageRoute
   SportsRoute: typeof SportsRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities': {
       id: '/opportunities'
       path: '/opportunities'
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   EducationRoute: EducationRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  LibraryRoute: LibraryRoute,
   OpportunitiesRoute: OpportunitiesRoute,
   OurVillageRoute: OurVillageRoute,
   SportsRoute: SportsRoute,

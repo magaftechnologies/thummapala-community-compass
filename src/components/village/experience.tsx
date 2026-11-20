@@ -53,6 +53,7 @@ import {
   activities,
   announcements,
   futureInitiatives,
+  libraryPhotos,
   gallery,
   filterEntries,
   impactPeople,
@@ -268,7 +269,7 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
         <div className="hero-pagination">
           <span className="slide-number">
             0{index + 1}
-            <span className="opacity-50"> / 05</span>
+            <span className="opacity-50"> / {String(heroSlides.length).padStart(2, "0")}</span>
           </span>
           <div className="hero-indicators">
             {heroSlides.map((s, i) => (
@@ -851,7 +852,10 @@ function Stories({ t }: { t: Translate }) {
   );
 }
 function ImpactPeople({ t }: { t: Translate }) {
-  const carousel = useCarousel(impactPeople.length, true, "center", false);
+  const carousel = useCarousel(impactPeople.length, true, "start", false);
+  useEffect(() => {
+    carousel.api?.scrollTo(0, true);
+  }, [carousel.api]);
   const videoId = getYouTubeVideoId(impactVideoUrl);
   return (
     <section
@@ -940,7 +944,7 @@ function ImpactPeople({ t }: { t: Translate }) {
             />
           ) : (
             <div className="impact-video-placeholder">
-              <img src={stories[5].image} alt="" loading="lazy" />
+              <img src="/images/thummapala-story-sports-journey.png" alt={t(c("Thummapala sports community and Kho-Kho journey", "తుమ్మపాల క్రీడా సమాజం, ఖో-ఖో ప్రయాణం"))} loading="lazy" />
               <span className="impact-video-shade" aria-hidden="true" />
               <div className="impact-video-content">
                 <span className="impact-video-play" aria-hidden="true"><Play fill="currentColor" /></span>
@@ -1911,7 +1915,7 @@ function FocusAreas({ t }: { t: Translate }) {
   return (
     <section id="focus" className="section focus-section">
       <div className="container-wide">
-        <HomeHead title={c("Our Focus Areas", "మన ముఖ్య రంగాలు")} line={c("Three paths. One shared future.", "మూడు మార్గాలు. ఒకే భవిష్యత్తు.")} t={t}>
+        <HomeHead title={c("Our Focus Areas", "మన ముఖ్య రంగాలు")} line={c("Four paths. One shared future.", "నాలుగు మార్గాలు. ఒకే భవిష్యత్తు.")} t={t}>
           <CarouselControls t={t} prev={() => { pauseForInteraction(); api?.scrollPrev(); }} next={() => { pauseForInteraction(); api?.scrollNext(); }} />
         </HomeHead>
         <div
@@ -2146,24 +2150,140 @@ function PageHero({ page, t }: { page: PageKey; t: Translate }) {
             )}
           <h1>{t(info.title)}</h1>
           <p>{t(info.line)}</p>
+          {page === "library" && (
+            <Button asChild className="hero-cta">
+              <a href="#library-about">
+                {t(c("Explore the Library", "గ్రంథాలయాన్ని చూడండి"))}
+                <ArrowRight />
+              </a>
+            </Button>
+          )}
         </div>
       </div>
     </section>
   );
 }
-function PageCta({ t }: { t: Translate }) {
+function PageCta({ t, page }: { t: Translate; page: PageKey }) {
+  const isLibrary = page === "library";
   return (
-    <section className="page-cta">
+    <section className={`page-cta ${isLibrary ? "library-page-cta" : ""}`}>
       <div className="container-wide page-cta-inner">
-        <h2>{t(c("Want to be part of this?", "ఇందులో భాగమవ్వాలనుకుంటున్నారా?"))}</h2>
+        <div>
+          <h2>{t(isLibrary ? c("Be Part of the Journey", "ప్రయాణంలో భాగమవ్వండి") : c("Want to be part of this?", "ఇందులో భాగమవ్వాలనుకుంటున్నారా?"))}</h2>
+          {isLibrary && <p>{t(c("Together, we can create more opportunities to read, learn and grow.", "కలిసి చదవడానికి, నేర్చుకోవడానికి, ఎదగడానికి మరిన్ని అవకాశాలు సృష్టిద్దాం."))}</p>}
+        </div>
         <Button asChild className="hero-cta">
           <Link to="/contact">
-            {t(c("Be part of the journey", "ప్రయాణంలో భాగమవ్వండి"))}
+            {t(isLibrary ? c("Connect with us", "మాతో కలవండి") : c("Be part of the journey", "ప్రయాణంలో భాగమవ్వండి"))}
             <ArrowRight />
           </Link>
         </Button>
       </div>
     </section>
+  );
+}
+function LibraryPage({ t, onSelect }: { t: Translate; onSelect: (entry: Entry, items: Entry[]) => void }) {
+  const photos = gallery.filter((item) => item.category.en === "Library & Learning");
+  const aboutPhoto = photos[0];
+  const readersPhoto = photos.find((item) => item.id === "gallery-library-community-celebration");
+  const activitiesPhotos = photos.slice(1, 3);
+  const eventPhotos = photos.slice(3);
+  const renderPhoto = (photo: Entry) => (
+    <Button
+      variant="editorial"
+      className="library-photo-button"
+      key={photo.id}
+      aria-label={`${t(c("Open photograph", "ఫోటో తెరవండి"))}: ${t(photo.title)}`}
+      onClick={() => onSelect(photo, photos)}
+    >
+      <img src={photo.imageUrl ?? images[photo.image]} alt={t(photo.alt ?? photo.title)} loading="lazy" />
+      <span>{t(photo.title)}</span>
+    </Button>
+  );
+  return (
+    <div className="library-page">
+      <section id="library-about" className="section container-wide library-about">
+        <div className="library-about-copy reveal">
+          <p className="eyebrow">{t(c("ABOUT THE LIBRARY", "గ్రంథాలయం గురించి"))}</p>
+          <h2>{t(c("A place for shared learning.", "కలిసి నేర్చుకునే స్థలం."))}</h2>
+          <p className="section-copy">
+            {t(c(
+              "These photographs capture Library Week, readers and community gatherings in Thummapala. They show people coming together around books, recognition and learning.",
+              "ఈ చిత్రాలు తుమ్మపాలలో గ్రంథాలయ వారోత్సవాలు, పాఠకులు, సమాజ సమావేశాలను చూపిస్తున్నాయి. పుస్తకాలు, గుర్తింపు, అభ్యాసం చుట్టూ ప్రజలు కలిసిన క్షణాలు ఇవి.",
+            ))}
+          </p>
+        </div>
+        {aboutPhoto && renderPhoto(aboutPhoto)}
+      </section>
+
+      <section className="section library-learning-section">
+        <div className="container-wide library-learning-copy">
+          <div className="reveal">
+            <p className="eyebrow">{t(c("A PLACE FOR LEARNING", "అభ్యాసానికి ఒక స్థలం"))}</p>
+            <h2>{t(c("Reading brings generations together.", "చదువు తరాలను కలుపుతుంది."))}</h2>
+            <p className="section-copy">
+              {t(c(
+                "Readers, students, children, books and community participation are at the heart of these moments.",
+                "పాఠకులు, విద్యార్థులు, పిల్లలు, పుస్తకాలు, సమాజ భాగస్వామ్యం ఈ క్షణాల కేంద్రంగా ఉన్నాయి.",
+              ))}
+            </p>
+            <ul className="library-learning-list">
+              <li>{t(c("Reading", "చదవడం"))}</li>
+              <li>{t(c("Student learning", "విద్యార్థుల అభ్యాసం"))}</li>
+              <li>{t(c("Community participation", "సమాజ భాగస్వామ్యం"))}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section container-wide library-photo-section">
+        <div className="section-head reveal">
+          <p className="eyebrow">{t(c("LIBRARY ACTIVITIES", "గ్రంథాలయ కార్యక్రమాలు"))}</p>
+          <h2>{t(c("Moments around books and learning.", "పుస్తకాలు, అభ్యాసానికి సంబంధించిన క్షణాలు."))}</h2>
+          <p className="section-copy">{t(c("Library Week, reading activities and community gatherings are represented in these photographs.", "గ్రంథాలయ వారోత్సవాలు, పఠన కార్యక్రమాలు, సమాజ సమావేశాలు ఈ చిత్రాల్లో కనిపిస్తాయి."))}</p>
+        </div>
+        <div className="library-photo-grid">{activitiesPhotos.map(renderPhoto)}</div>
+      </section>
+
+      <section className="section library-readers-section">
+        <div className="container-wide library-readers-grid">
+          {readersPhoto && renderPhoto(readersPhoto)}
+          <div className="reveal">
+            <p className="eyebrow">{t(c("COMMUNITY & READERS", "సమాజం & పాఠకులు"))}</p>
+            <h2>{t(c("Reading brings generations together.", "చదువు తరాలను కలుపుతుంది."))}</h2>
+            <p className="section-copy">{t(c("Children and community members share a moment with books, reflecting the value of learning together.", "పిల్లలు, సమాజ సభ్యులు పుస్తకాలతో కలిసి గడిపిన క్షణం — కలిసి నేర్చుకోవడం విలువను ఇది చూపిస్తుంది."))}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section container-wide library-photo-section">
+        <div className="section-head reveal">
+          <p className="eyebrow">{t(c("LIBRARY EVENTS", "గ్రంథాలయ కార్యక్రమాలు"))}</p>
+          <h2>{t(c("Community gatherings and recognition.", "సమాజ సమావేశాలు, గుర్తింపు."))}</h2>
+          <p className="section-copy">{t(c("Photographs from Library Week and related community gatherings, without unverified dates or event details.", "ధృవీకరించని తేదీలు లేదా వివరాలు లేకుండా, గ్రంథాలయ వారోత్సవాలు మరియు సంబంధిత సమాజ సమావేశాల చిత్రాలు."))}</p>
+        </div>
+        <div className="library-photo-grid">{eventPhotos.map(renderPhoto)}</div>
+      </section>
+
+      <section className="section library-gallery-section">
+        <div className="container-wide">
+          <div className="section-head reveal">
+            <p className="eyebrow">{t(c("LIBRARY GALLERY", "గ్రంథాలయ చిత్రాలు"))}</p>
+            <h2>{t(c("Library & Learning", "గ్రంథాలయం & అభ్యాసం"))}</h2>
+          </div>
+          <div className="library-gallery-grid">{photos.map(renderPhoto)}</div>
+        </div>
+      </section>
+
+      <section className="section container-wide library-future-section">
+        <div className="library-future-copy reveal">
+          <p className="eyebrow">{t(c("FUTURE VISION", "భవిష్యత్ దృష్టి"))}</p>
+          <h2>{t(c("Growing with Our Community", "మన సమాజంతో కలిసి ఎదుగుతూ"))}</h2>
+          <p className="section-copy">{t(c("Looking ahead, the Library could continue to grow as a space for reading, student learning, community knowledge and educational activities, with possibilities for digital learning in the future.", "భవిష్యత్తులో చదవడం, విద్యార్థుల అభ్యాసం, సమాజ జ్ఞానం, విద్యా కార్యక్రమాలకు గ్రంథాలయం మరింత తోడ్పడే స్థలంగా ఎదగవచ్చు. డిజిటల్ అభ్యాస అవకాశాలనూ పరిశీలించవచ్చు."))}</p>
+          <p className="sample">{t(c("These are possibilities for the future, not existing services.", "ఇవి భవిష్యత్ అవకాశాలు మాత్రమే; ప్రస్తుతం అందుబాటులో ఉన్న సేవలు కావు."))}</p>
+        </div>
+      </section>
+    </div>
   );
 }
 function PageContent({ page, ctx }: { page: PageKey; ctx: PageContext }) {
@@ -2188,6 +2308,8 @@ function PageContent({ page, ctx }: { page: PageKey; ctx: PageContext }) {
       return <Agrotech t={t} open={open} />;
     case "sports":
       return <Sports t={t} open={open} />;
+    case "library":
+      return <LibraryPage t={t} onSelect={showGallery} />;
     case "opportunities":
       return <Opportunities t={t} />;
     case "events":
@@ -2213,7 +2335,7 @@ export function InnerPage({ page }: { page: PageKey }) {
         <>
           <PageHero page={page} t={ctx.t} />
           <PageContent page={page} ctx={ctx} />
-          {page !== "contact" && <PageCta t={ctx.t} />}
+          {page !== "contact" && <PageCta t={ctx.t} page={page} />}
         </>
       )}
     </SitePage>
