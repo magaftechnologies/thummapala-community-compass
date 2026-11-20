@@ -2242,7 +2242,7 @@ function LibraryPage({ t, onSelect }: { t: Translate; onSelect: (entry: Entry, i
           <h2>{t(c("Moments around books and learning.", "పుస్తకాలు, అభ్యాసానికి సంబంధించిన క్షణాలు."))}</h2>
           <p className="section-copy">{t(c("Library Week, reading activities and community gatherings are represented in these photographs.", "గ్రంథాలయ వారోత్సవాలు, పఠన కార్యక్రమాలు, సమాజ సమావేశాలు ఈ చిత్రాల్లో కనిపిస్తాయి."))}</p>
         </div>
-        <div className="library-photo-grid">{activitiesPhotos.map(renderPhoto)}</div>
+        <div className="library-photo-grid library-activities-grid">{activitiesPhotos.map(renderPhoto)}</div>
       </section>
 
       <section className="section library-readers-section">
@@ -2262,7 +2262,7 @@ function LibraryPage({ t, onSelect }: { t: Translate; onSelect: (entry: Entry, i
           <h2>{t(c("Community gatherings and recognition.", "సమాజ సమావేశాలు, గుర్తింపు."))}</h2>
           <p className="section-copy">{t(c("Photographs from Library Week and related community gatherings, without unverified dates or event details.", "ధృవీకరించని తేదీలు లేదా వివరాలు లేకుండా, గ్రంథాలయ వారోత్సవాలు మరియు సంబంధిత సమాజ సమావేశాల చిత్రాలు."))}</p>
         </div>
-        <div className="library-photo-grid">{eventPhotos.map(renderPhoto)}</div>
+        <div className="library-photo-grid library-events-grid">{eventPhotos.map(renderPhoto)}</div>
       </section>
 
       <section className="section library-gallery-section">

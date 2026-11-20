@@ -69,7 +69,15 @@ export const moreNav = [
   ["/contact", c("Contact", "సంప్రదించండి")],
 ] as const;
 export const innerPaths: SitePath[] = [...nav.slice(1), ...moreNav].map(([path]) => path);
-export const focusAreas = [
+export const focusAreas: readonly {
+  path: SitePath;
+  image: string;
+  alt: Copy;
+  mobilePosition?: "left" | "center" | "right";
+  title: Copy;
+  line: Copy;
+  cta: Copy;
+}[] = [
   {
     path: "/education",
     image: "/images/digital-thummapala-education.png",
@@ -103,15 +111,7 @@ export const focusAreas = [
     line: c("A place to read, learn and grow.", "చదవడానికి, నేర్చుకోవడానికి, ఎదగడానికి ఒక స్థలం."),
     cta: c("Explore Library", "గ్రంథాలయాన్ని చూడండి"),
   },
-] as const satisfies readonly {
-  path: SitePath;
-  image: string;
-  alt: Copy;
-  mobilePosition?: "left" | "center" | "right";
-  title: Copy;
-  line: Copy;
-  cta: Copy;
-}[];
+];
 export const villageStats = [
   { value: 31035, label: c("Population", "జనాభా") },
   { value: 8074, label: c("Households", "కుటుంబాలు") },
@@ -468,14 +468,14 @@ export const stories = [
 export const impactPeople = [
   {
     id: "pet-master",
-    name: c("Peela Veer Nayadu", "పీల వీర్ నాయుడు"),
+    name: c("Peela veeru Naidu", "పీల వీర్ నాయుడు"),
     role: c("Physical Education Teacher · P.T. Sir", "శారీరక విద్య ఉపాధ్యాయుడు · పి.టి. సార్"),
     description: c(
       "Contributes to physical education and sports training, especially Kho-Kho.",
       "శారీరక విద్య, క్రీడా శిక్షణకు, ముఖ్యంగా ఖో-ఖోకు తోడ్పడుతున్నారు.",
     ),
     image: "/images/thummapala-impact-pet-master.png",
-    alt: c("Peela Veer Nayadu supporting physical education and Kho-Kho training", "శారీరక విద్య, ఖో-ఖో శిక్షణకు తోడ్పడుతున్న పీల వీర్ నాయుడు"),
+    alt: c("Peela veeru Naidu supporting physical education and Kho-Kho training", "శారీరక విద్య, ఖో-ఖో శిక్షణకు తోడ్పడుతున్న పీల వీర్ నాయుడు"),
   },
   {
     id: "adari-govindarao",
@@ -488,6 +488,17 @@ export const impactPeople = [
     image: "/images/thummapala-impact-some-ramraju.png",
     alt: c("Adari Govindarao supporting school and education", "పాఠశాల, విద్యకు తోడ్పడుతున్న అడారి గోవిందరావు"),
   },
+   {
+    id: "pethakam-setti-balaraam",
+    name: c("Patakamsetti Balaram", "పెతకంశెట్టి బాలరాం"),
+    role: c("Chairman", "ఛైర్మన్"),
+    description: c(
+      "Serves as Chairman in the Thummapala community.",
+      "తుమ్మపాల సమాజంలో ఛైర్మన్‌గా సేవలందిస్తున్నారు.",
+    ),
+    image: "/images/thummapala-impact-pethakam-setti-balaraam.jpeg",
+    alt: c("Patakamsetti Balaram", "పెతకంశెట్టి బాలరాం"),
+  },
   {
     id: "ajay",
     name: c("Ajay Kamadhenu", "అజయ్ కామధేనూ"),
@@ -498,18 +509,8 @@ export const impactPeople = [
     ),
     image: "/images/thummapala-impact-ajay.png",
     alt: c("Ajay Kamadhenu, digital creator", "డిజిటల్ సృష్టికర్త అజయ్ కామధేనూ"),
-  },
-  {
-    id: "pethakam-setti-balaraam",
-    name: c("Pethakam Setti Balaraam", "పెతకంశెట్టి బాలరాం"),
-    role: c("Chairman", "ఛైర్మన్"),
-    description: c(
-      "Serves as Chairman in the Thummapala community.",
-      "తుమ్మపాల సమాజంలో ఛైర్మన్‌గా సేవలందిస్తున్నారు.",
-    ),
-    image: "/images/thummapala-impact-pethakam-setti-balaraam.jpeg",
-    alt: c("Pethakam Setti Balaraam", "పెతకంశెట్టి బాలరాం"),
-  },
+  }
+ 
 ] as const;
 export const impactVideoUrl = "https://www.youtube.com/watch?v=YOUR_VIDEO_ID";
 export function getYouTubeVideoId(value: string) {
