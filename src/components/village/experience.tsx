@@ -662,6 +662,9 @@ function useCarousel(count: number, auto = false, align: "start" | "center" = "s
   const [paused, setPaused] = useState(false);
   const [snaps, setSnaps] = useState<number[]>([]);
   useEffect(() => {
+    api?.scrollTo(0, true);
+  }, [api]);
+  useEffect(() => {
     if (!api) return;
     const select = () => {
       setIndex(api.selectedScrollSnap());
@@ -770,7 +773,7 @@ function Stories({ t }: { t: Translate }) {
   const carousel = useCarousel(stories.length, true, "center", false);
   useEffect(() => {
     if (!carousel.api) return;
-    carousel.api.scrollTo(carousel.api.selectedScrollSnap(), true);
+    carousel.api.scrollTo(0, true);
   }, [carousel.api]);
   return (
     <>
@@ -852,7 +855,7 @@ function Stories({ t }: { t: Translate }) {
   );
 }
 function ImpactPeople({ t }: { t: Translate }) {
-  const carousel = useCarousel(impactPeople.length, true, "start", false);
+  const carousel = useCarousel(impactPeople.length, true, "center", false);
   useEffect(() => {
     carousel.api?.scrollTo(0, true);
   }, [carousel.api]);
@@ -910,7 +913,7 @@ function ImpactPeople({ t }: { t: Translate }) {
                   aria-hidden={!active}
                 >
                   <div className="impact-person-card">
-                    <div className="impact-person-photo">
+                    <div className={`impact-person-photo impact-person-photo--${person.id}`}>
                       <img src={person.image} alt={t(person.alt)} loading="lazy" />
                     </div>
                     <div className="impact-person-copy">
@@ -966,13 +969,16 @@ function Agrotech({ t, open }: { t: Translate; open: Open }) {
   const pageVisual = pageIntros.agrotech;
   return (
     <section id="agrotech">
-      <div className="full-photo-story">
-        <img
-          loading="lazy"
-          src={pageVisual.contentImageUrl ?? images.agriculture}
-          alt={pageVisual.contentAlt ? t(pageVisual.contentAlt) : ""}
-        />
-        <div className="container-wide">
+      <div className="full-photo-story agrotech-story">
+        <div className="container-wide agrotech-story-inner">
+          <figure className="agrotech-story-figure">
+            <img
+              loading="lazy"
+              src={pageVisual.contentImageUrl ?? images.agriculture}
+              alt={pageVisual.contentAlt ? t(pageVisual.contentAlt) : ""}
+            />
+            <figcaption>{t(pageVisual.contentCaption ?? imageMetadata.caption)}</figcaption>
+          </figure>
           <div className="full-photo-content">
             <p className="eyebrow">{t(c("OUR LAND. OUR LIVELIHOOD.", "మన నేల. మన జీవనాధారం."))}</p>
             <h2 className="section-title">
@@ -1001,7 +1007,6 @@ function Agrotech({ t, open }: { t: Translate; open: Open }) {
             </div>
           </div>
         </div>
-        <span className="photo-credit">{t(pageVisual.contentCaption ?? imageMetadata.caption)}</span>
       </div>
       <div className="container-wide initiative-list">
         {agricultureInitiatives.map((e, i) => (
@@ -1899,7 +1904,7 @@ function FocusAreas({ t }: { t: Translate }) {
     const select = () => setSelected(api.selectedScrollSnap() % focusAreas.length);
     select();
     api.on("select", select);
-    api.scrollTo(api.selectedScrollSnap(), true);
+    api.scrollTo(0, true);
     return () => {
       api.off("select", select);
     };

@@ -193,9 +193,9 @@ export const pageIntros: Record<
     image: "village",
     heroImageUrl: "/images/digital-thummapala-agrotech.png",
     heroAlt: c("Agriculture and farming in Thummapala", "తుమ్మపాలలో వ్యవసాయం, సాగు"),
-    contentImageUrl: "/images/digital-thummapala-agrotech.png",
-    contentAlt: c("Agriculture and farming in Thummapala", "తుమ్మపాలలో వ్యవసాయం, సాగు"),
-    contentCaption: c("Agriculture and farming in Thummapala", "తుమ్మపాలలో వ్యవసాయం, సాగు"),
+    contentImageUrl: "/images/digital-thummapala-sugar-factory.png",
+    contentAlt: c("Sugar factory and sugarcane transport near Thummapala", "తుమ్మపాల సమీపంలోని చక్కెర కర్మాగారం, చెరకు రవాణా"),
+    contentCaption: c("Sugar factory and sugarcane transport near Thummapala", "తుమ్మపాల సమీపంలోని చక్కెర కర్మాగారం, చెరకు రవాణా"),
   },
   sports: {
     title: c("Sports", "క్రీడలు"),
@@ -466,6 +466,17 @@ export const stories = [
   },
 ] as const;
 export const impactPeople = [
+  {
+    id: "dantuluri-vv-gopala-raju",
+    name: c("Dantuluri V V Gopala Raju Garu", "దంతులూరి V V గోపాల రాజు గారు"),
+    role: c("Site donor · High school, roads and cement roads", "స్థల దాత · హై స్కూల్, రహదారులు, సిమెంట్ రోడ్లు"),
+    description: c(
+      "Recognized as a site donor for the high school, roads and cement roads in Thummapala.",
+      "తుమ్మపాలలో హై స్కూల్, రహదారులు, సిమెంట్ రోడ్లకు స్థల దాతగా గుర్తింపు పొందారు.",
+    ),
+    image: "/images/thummapala-impact-dantuluri-vv-gopala-raju.jpeg",
+    alt: c("Portrait of Dantuluri V V Gopala Raju Garu", "దంతులూరి V V గోపాల రాజు గారు"),
+  },
   {
     id: "pet-master",
     name: c("Peela veeru Naidu", "పీల వీర్ నాయుడు"),

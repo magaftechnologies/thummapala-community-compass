@@ -136,9 +136,12 @@ img { display: block; max-width: 100%; }
 .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 20%; }
 
 /* Dark sections */
-.education-section, .future-section, .enquiry-section, .activity-section { background: var(--forest-night); color: var(--on-dark); }
-:is(.education-section, .future-section, .enquiry-section, .activity-section) :is(.section-copy, .data-note, .photo-caption, .sample) { color: var(--on-dark-muted); }
-:is(.education-section, .future-section, .enquiry-section, .activity-section) :is(.eyebrow, .telugu-line, .text-link) { color: var(--sunrise); }
+.education-section { background: var(--paper); color: var(--foreground); }
+.future-section, .enquiry-section, .activity-section { background: var(--forest-night); color: var(--on-dark); }
+:is(.future-section, .enquiry-section, .activity-section) :is(.section-copy, .data-note, .photo-caption, .sample) { color: var(--on-dark-muted); }
+:is(.future-section, .enquiry-section, .activity-section) :is(.eyebrow, .telugu-line, .text-link) { color: var(--sunrise); }
+.education-section :is(.section-copy, .data-note, .photo-caption, .sample) { color: var(--muted-foreground); }
+.education-section :is(.eyebrow, .telugu-line, .text-link) { color: var(--primary); }
 
 /* ===== Navigation ===== */
 .site-nav { position: fixed; inset: 0 0 auto; z-index: 40; height: var(--nav-h); display: flex; align-items: center; color: var(--on-dark); transition: background .3s, color .3s, box-shadow .3s; }
@@ -170,7 +173,7 @@ img { display: block; max-width: 100%; }
 .hero-content { max-width: 760px; animation: text-reveal .7s ease both; }
 .hero-content .eyebrow { color: var(--sunrise); }
 .hero h1 { margin-top: var(--s-3); font-family: var(--font-display); font-weight: 400; font-size: var(--t-display); line-height: 1.02; white-space: pre-line; overflow-wrap: anywhere; }
-.hero-subtitle { margin-top: var(--s-3); font-family: "Noto Sans Telugu", var(--font-sans); font-size: clamp(17px, 1.8vw, 22px); line-height: 1.6; }
+.hero-subtitle { margin-top: var(--s-3); font-family: var(--font-sans); font-size: clamp(17px, 1.8vw, 22px); line-height: 1.6; }
 .hero-support { margin-top: var(--s-2); max-width: 52ch; font-size: var(--t-body); line-height: 1.75; color: var(--on-dark-muted); }
 .hero-actions { margin-top: var(--s-4); display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .hero-cta { height: 48px; padding-inline: 22px; border-radius: 999px; background: var(--sunrise); color: var(--forest-night); font-weight: 700; font-size: var(--t-small); }
@@ -220,29 +223,29 @@ img { display: block; max-width: 100%; }
 .education-lead { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4); align-items: center; }
 .education-lead > div:first-child { grid-column: 1 / span 6; }
 .education-lead > div:last-child { grid-column: 8 / span 5; }
-.education-lead img { aspect-ratio: 4 / 3; width: 100%; object-fit: contain; object-position: 50% 22%; background: var(--forest-night); border-radius: var(--radius-panel); }
-.journey { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-2); margin-block: var(--s-6); padding-top: var(--s-3); border-top: 1px solid var(--line-dark); }
+.education-lead img { aspect-ratio: 4 / 3; width: 100%; object-fit: contain; object-position: 50% 22%; background: var(--surface); border-radius: var(--radius-panel); }
+.journey { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-2); margin-block: var(--s-6); padding-top: var(--s-3); border-top: 1px solid var(--border); }
 .journey-step { position: relative; padding-top: var(--s-2); }
 .journey-step:before { content: ""; position: absolute; top: calc(-1 * var(--s-3) - 5px); left: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--sunrise); }
 .journey-step span { font-size: var(--t-caption); color: var(--sunrise); }
 .journey-step p { margin-top: 6px; font-size: var(--t-small); line-height: 1.5; }
-.education-section .section-head h3 { color: var(--on-dark); }
+.education-section .section-head h3 { color: var(--foreground); }
 .programs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
-.program { display: flex; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--line-dark); border-radius: 14px; }
+.program { display: flex; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--border); border-radius: 14px; }
 .program-icon { width: 26px; height: 26px; color: var(--sunrise); flex-shrink: 0; }
 .program h3 { font-size: 16px; font-weight: 600; }
-.program p { margin-top: var(--s-1); font-size: var(--t-small); line-height: 1.7; color: var(--on-dark-muted); }
-.program .text-link { margin-top: var(--s-2); color: var(--sunrise); }
-.mentor-band { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4); margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--line-dark); }
+.program p { margin-top: var(--s-1); font-size: var(--t-small); line-height: 1.7; color: var(--muted-foreground); }
+.program .text-link { margin-top: var(--s-2); color: var(--primary); }
+.mentor-band { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4); margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--border); }
 .mentor-band > div:first-child { grid-column: 1 / span 5; }
 .mentor-band > div:last-child { grid-column: 7 / span 6; }
 .mentor-band h3 { font-family: var(--font-display); font-weight: 400; font-size: var(--t-h3); }
 .mentor-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
 .mentor-item { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
-.mentor-item button { color: var(--on-dark); }
+.mentor-item button { color: var(--foreground); }
 .mentor-avatar { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--forest-deep); color: var(--sunrise); flex-shrink: 0; }
 .mentor-item strong { display: block; font-size: var(--t-small); font-weight: 600; }
-.mentor-item small { font-size: var(--t-caption); color: var(--on-dark-muted); }
+.mentor-item small { font-size: var(--t-caption); color: var(--muted-foreground); }
 
 /* ===== Filters + carousels ===== */
 .filters { display: flex; gap: var(--s-1); overflow-x: auto; padding-bottom: var(--s-1); margin-bottom: var(--s-4); scrollbar-width: none; }
@@ -270,9 +273,19 @@ img { display: block; max-width: 100%; }
 .full-photo-story { position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center; min-height: clamp(520px, 70vh, 720px); color: var(--on-dark); }
 .full-photo-story > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 78% 50%; }
 .full-photo-story:after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, oklch(0.14 0.03 140 / .85), oklch(0.14 0.03 140 / .2) 70%); }
+.full-photo-story.agrotech-story { display: block; min-height: 0; background: var(--surface); color: var(--foreground); }
+.agrotech-story:after { content: none; }
+.agrotech-story-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(28px, 5vw, 72px); padding-block: var(--section-y); }
+.agrotech-story-figure { min-width: 0; margin: 0; }
+.agrotech-story-figure img { position: static; z-index: auto; width: 100%; height: clamp(300px, 36vw, 460px); object-fit: cover; object-position: center; border-radius: var(--radius-panel); }
+.agrotech-story-figure figcaption { margin-top: var(--s-1); color: var(--muted-foreground); font-size: var(--t-caption); }
 .full-photo-content { max-width: 560px; padding-block: var(--s-7); }
 .full-photo-content .eyebrow { color: var(--sunrise); }
 .full-photo-content p { margin-top: var(--s-3); line-height: 1.8; color: var(--on-dark-muted); }
+.agrotech-story .full-photo-content { padding-block: 0; }
+.agrotech-story .full-photo-content .eyebrow { color: var(--primary); }
+.agrotech-story .full-photo-content p { color: var(--muted-foreground); }
+.agrotech-story .agri-process { color: var(--primary); }
 .agri-process { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); font-size: var(--t-caption); text-transform: uppercase; letter-spacing: 1px; color: var(--sunrise); }
 .photo-credit { position: absolute; right: clamp(20px, 5vw, 64px); bottom: var(--s-2); font-size: var(--t-caption); color: var(--on-dark-muted); }
 .initiative-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); padding-block: var(--s-6); }
@@ -495,7 +508,7 @@ body { background: var(--paper); }
 h1, h2, h3, .section-title, .story-title, .event-info h3 { font-weight: 700 !important; letter-spacing: -0.015em; }
 html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .section-line { margin-top: var(--s-1); max-width: 56ch; font-size: var(--t-body-l); line-height: 1.6; color: var(--muted-foreground); }
-.education-section .section-line, .future-section .section-line { color: var(--on-dark-muted); }
+.future-section .section-line { color: var(--on-dark-muted); }
 .page-enter { animation: text-reveal .5s ease both; }
 
 /* nav */
@@ -581,6 +594,7 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 
 /* inner pages */
 .page-hero { position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: flex-end; min-height: clamp(360px, 52svh, 520px); background: var(--forest-night); color: var(--on-dark); }
+.page-hero:is([data-page="education"], [data-page="agrotech"], [data-page="sports"], [data-page="library"]) { min-height: clamp(500px, 70svh, 680px); }
 .page-hero-photo { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
 .page-hero-body { padding-top: calc(var(--nav-h) + var(--s-5)); padding-bottom: var(--s-5); }
 .page-hero h1 { margin-top: var(--s-2); font-size: clamp(38px, 5vw, 68px); line-height: 1.05; }
@@ -593,6 +607,7 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .page-cta h2 { font-size: var(--t-h3); }
 
 @media (max-width: 1100px) {
+  .page-hero:is([data-page="education"], [data-page="agrotech"], [data-page="sports"], [data-page="library"]) { min-height: clamp(440px, 64svh, 600px); }
   .soon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .opp-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .opportunity-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -684,15 +699,16 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .impact-people-viewport { overflow: hidden; padding-block: 18px 26px; }
 .impact-people-viewport .carousel-track { align-items: center; gap: clamp(12px, 2vw, 24px); }
 .impact-person-slide { flex: 0 0 68%; min-width: 0; opacity: .48; filter: brightness(.82); transition: opacity .6s ease, filter .6s ease; }
+.impact-person-slide:first-child { margin-inline-start: 16%; }
 .impact-person-slide[aria-hidden="false"] { z-index: 1; opacity: 1; filter: brightness(1); }
 .impact-person-card { display: grid; min-height: 420px; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-panel); background: var(--card); box-shadow: 0 16px 38px oklch(0.2 0.03 140 / .08); transform: scale(.93); transition: transform .65s cubic-bezier(.2,.7,.2,1); }
 .impact-person-slide[aria-hidden="false"] .impact-person-card { transform: scale(1); }
 .impact-person-photo { display: grid; min-width: 0; min-height: 420px; place-items: center; overflow: hidden; background: var(--surface); }
 .impact-person-photo img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.impact-person-slide:nth-child(1) .impact-person-photo img { object-position: 50% 30%; }
-.impact-person-slide:nth-child(2) .impact-person-photo img { object-position: 50% 22%; }
-.impact-person-slide:nth-child(3) .impact-person-photo img { object-position: 50% 25%; }
-.impact-person-slide:nth-child(4) .impact-person-photo img { object-position: 50% 18%; }
+.impact-person-photo--pet-master img { object-position: 50% 30%; }
+.impact-person-photo--adari-govindarao img { object-position: 50% 22%; }
+.impact-person-photo--pethakam-setti-balaraam img { object-position: 50% 25%; }
+.impact-person-photo--ajay img { object-position: 50% 18%; }
 .impact-person-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; min-width: 0; padding: clamp(22px, 4vw, 52px); }
 .impact-person-index { color: var(--teal); font-size: var(--t-caption); font-weight: 700; letter-spacing: 1.2px; }
 .impact-person-copy h3 { margin-top: var(--s-2); font-size: clamp(27px, 3.2vw, 42px); line-height: 1.12; overflow-wrap: anywhere; }
@@ -779,9 +795,9 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
 .page-hero-copy { animation: page-copy-arrive .75s .12s ease both; }
 .crumbs { animation: page-copy-arrive .55s ease both; }
 .page-hero[data-page="agrotech"] .page-hero-photo { object-position: 78% center; }
-.page-hero[data-page="sports"] .page-hero-photo { object-position: 50% 18%; }
-.page-hero[data-page="education"] .page-hero-photo { object-position: 50% 22%; }
-.page-hero[data-page="library"] .page-hero-photo { object-position: center 42%; }
+.page-hero[data-page="sports"] .page-hero-photo { object-position: 50% 32%; }
+.page-hero[data-page="education"] .page-hero-photo { object-position: 50% 34%; }
+.page-hero[data-page="library"] .page-hero-photo { object-position: center 50%; }
 .page-enter > section:not(.page-hero) .reveal { animation: reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% entry 20%; }
 .library-about, .library-readers-grid { display: grid; min-width: 0; align-items: center; gap: var(--s-6); }
 .library-about { grid-template-columns: .85fr 1.15fr; }
@@ -839,19 +855,17 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
   .library-gallery-grid { columns: 2; }
   .library-readers-grid .library-photo-button { order: 1; }
   .library-readers-grid > div { order: 0; }
+  .agrotech-story-inner { grid-template-columns: 1fr; }
+  .agrotech-story-figure img { height: clamp(260px, 58vw, 380px); }
 }
 @media (max-width: 860px) {
   .library-events-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .page-hero[data-page="library"] { height: clamp(360px, 44svh, 440px); min-height: clamp(360px, 44svh, 440px); }
 }
 @media (max-width: 480px) {
   .library-photo-grid, .library-activities-grid { grid-template-columns: 1fr; }
   .library-photo-grid .library-photo-button { min-height: 220px; aspect-ratio: 16 / 10; }
   .library-gallery-grid { columns: 1; }
   .library-future-copy { padding: var(--s-4); }
-}
-@media (max-width: 600px) {
-  .page-hero[data-page="library"] { height: clamp(300px, 42svh, 380px); min-height: clamp(300px, 42svh, 380px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .library-photo-button img { transition-duration: .01ms; }
@@ -861,11 +875,16 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
   .story-slide { flex-basis: 82%; }
   .activity-story-slide, .upcoming-event-slide { flex-basis: 84%; }
   .impact-person-slide { flex-basis: 84%; }
+  .impact-person-slide:first-child { margin-inline-start: 8%; }
   .events-activities-section .activity-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .soon-card { min-height: 280px; }
 }
 @media (max-width: 600px) {
-  .page-hero[data-page="sports"] .page-hero-photo { object-position: 50% 18%; }
+  .page-hero:is([data-page="education"], [data-page="agrotech"], [data-page="sports"], [data-page="library"]) { min-height: clamp(360px, 58svh, 480px); }
+  .page-hero[data-page="agrotech"] .page-hero-photo { object-position: 72% center; }
+  .page-hero[data-page="sports"] .page-hero-photo { object-position: 50% 28%; }
+  .page-hero[data-page="education"] .page-hero-photo { object-position: 50% 30%; }
+  .page-hero[data-page="library"] .page-hero-photo { object-position: center 48%; }
   .focus-viewport { margin-inline: -20px; padding-inline: 20px; }
   .focus-slide { flex-basis: 72%; }
   .focus-card { height: 390px; }
@@ -892,6 +911,7 @@ html[lang="te"] h1, html[lang="te"] h2 { letter-spacing: 0; }
   .events-activities-section .activity-tile { aspect-ratio: 5 / 4; }
   .impact-people-viewport { margin-inline: -20px; padding-inline: 20px; }
   .impact-person-slide { flex-basis: 86%; }
+  .impact-person-slide:first-child { margin-inline-start: 7%; }
   .impact-person-card { min-height: 0; grid-template-columns: minmax(0, 1fr); }
   .impact-person-photo { min-height: 0; height: clamp(220px, 62vw, 300px); }
   .impact-person-photo img { width: 100%; height: 100%; }
