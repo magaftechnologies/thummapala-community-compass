@@ -350,6 +350,7 @@ function SectionHead({
   return (
     <div className="section-head">
       <div>
+      s
         {eyebrow && <p className="eyebrow">{t(eyebrow)}</p>}
         <h2 className="section-title">{t(title)}</h2>
       </div>
