@@ -71,20 +71,24 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    // Replace these placeholders with the app's name and description when first building the app.
     // Each content route, / included, must still set its own head(). Never add og:image or
     // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Thummapala Village | Our Village. Our People. Our Future." },
+      { title: "Digital Thummapala | Thummapala Village" },
       {
         name: "description",
-        content: "Thummapala — education, opportunity, agriculture, sports and community.",
+        content:
+          "Digital Thummapala — a digital platform for Thummapala village, connecting its people, education, agriculture, sports, opportunities, events and future initiatives.",
       },
-      { name: "author", content: "Thummapala Community" },
-      { property: "og:title", content: "Thummapala Village | Our Village. Our People. Our Future." },
-      { property: "og:description", content: "Our village. Our people. Our future." },
+      { name: "author", content: "Digital Thummapala" },
+      { property: "og:title", content: "Digital Thummapala | Thummapala Village" },
+      {
+        property: "og:description",
+        content:
+          "A digital platform connecting Thummapala village, its people, education, agriculture, sports, opportunities and future.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

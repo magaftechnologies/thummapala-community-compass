@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter, rootRouteId } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 import { routeTree } from "@/routeTree.gen";
-import { focusAreas, innerPaths } from "@/lib/village-data";
+import { focusAreas, heroSlides, innerPaths } from "@/lib/village-data";
 
 const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 const required = ["/our-village", "/education", "/agrotech", "/sports", "/opportunities", "/events", "/activities", "/stories", "/gallery", "/contact"];
@@ -21,6 +21,14 @@ describe("Site pages", () => {
       ["Education", "/education"],
       ["Agrotech", "/agrotech"],
       ["Sports", "/sports"],
+    ]);
+  });
+  it("uses the matching approved hero image for each focus area", () => {
+    const heroImageByTitle = new Map(heroSlides.map((slide) => [slide.title.en, slide.image]));
+    expect(focusAreas.map((area) => [area.title.en, area.image])).toEqual([
+      ["Education", heroImageByTitle.get("Education")],
+      ["Agrotech", heroImageByTitle.get("Agrotech")],
+      ["Sports", heroImageByTitle.get("Sports")],
     ]);
   });
 });

@@ -39,14 +39,13 @@ import {
   moreNav,
   focusAreas,
   villageStats,
-  opportunityPreview,
+  opportunityCategories,
   pageIntros,
   type PageKey,
   heroSlides,
   facts,
   programs,
   mentors,
-  opportunities,
   stories,
   agricultureInitiatives,
   sportsEntries,
@@ -56,6 +55,9 @@ import {
   futureInitiatives,
   gallery,
   filterEntries,
+  impactPeople,
+  impactVideoUrl,
+  getYouTubeVideoId,
   type Copy,
   type Entry,
   type Language,
@@ -63,12 +65,18 @@ import {
 
 type Translate = (copy: Copy) => string;
 type Open = (entry: Entry) => void;
+const opportunityIcons = {
+  jobs: Award,
+  scholarships: GraduationCap,
+  internships: Monitor,
+  training: BookOpen,
+};
 function Brand() {
   return (
-    <Link className="brand" to="/" aria-label="Thummapala home">
+    <Link className="brand" to="/" aria-label="Digital Thummapala home">
       <Sprout strokeWidth={1.3} />
       <span>
-        <strong>THUMMAPALA</strong>
+        <strong>DIGITAL THUMMAPALA</strong>
         <small>తుమ్మపాల · Growing together</small>
       </span>
     </Link>
@@ -199,7 +207,8 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
   }, [paused, reduced, index]);
   const slide = heroSlides[index];
   if (!slide) return null;
-  const change = (delta: number) => setIndex((i) => (i + delta + 5) % 5);
+  const change = (delta: number) =>
+    setIndex((i) => (i + delta + heroSlides.length) % heroSlides.length);
   return (
     <>
     <section
@@ -216,8 +225,9 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
         <img
           key={s.image}
           className={`hero-photo ${i === index ? "active" : ""}`}
-          src={images[s.image]}
-          alt={i === index ? `${s.category.en} · Representative Andhra Pradesh photograph` : ""}
+          src={s.image}
+          data-mobile-position={s.mobilePosition}
+          alt={i === index ? t(s.alt) : ""}
           aria-hidden={i !== index}
           fetchPriority={i === 0 ? "high" : "auto"}
         />
@@ -228,7 +238,7 @@ function Hero({ t, lang }: { t: Translate; lang: Language }) {
           <p className="eyebrow">0{index + 1} — {t(slide.category)}</p>
           <h1>{t(slide.title)}</h1>
           <p className="hero-subtitle">
-            {lang === "en" && index === 0 ? "మన ఊరు. మన ప్రజలు. మన భవిష్యత్తు." : t(slide.subtitle)}
+            {t(slide.subtitle)}
           </p>
           <p className="hero-support">
             {t(
@@ -518,6 +528,7 @@ function Pillars({ t }: { t: Translate }) {
   );
 }
 function Education({ t, open }: { t: Translate; open: Open }) {
+  const pageVisual = pageIntros.education;
   const icons = [BookOpen, Monitor, Compass, GraduationCap, Award, Atom];
   const steps = [
     c("School education", "పాఠశాల చదువు"),
@@ -560,10 +571,10 @@ function Education({ t, open }: { t: Translate; open: Open }) {
           <div>
             <img
               loading="lazy"
-              src={images.education}
-              alt="Representative students learning in an Andhra school"
+              src={pageVisual.contentImageUrl ?? images.education}
+              alt={pageVisual.contentAlt ? t(pageVisual.contentAlt) : ""}
             />
-            <p className="photo-caption">{t(imageMetadata.caption)}</p>
+            <p className="photo-caption">{t(pageVisual.contentCaption ?? imageMetadata.caption)}</p>
           </div>
         </div>
         <div className="journey" aria-label={t(c("Education journey", "చదువు ప్రయాణం"))}>
@@ -638,8 +649,14 @@ function Education({ t, open }: { t: Translate; open: Open }) {
     </section>
   );
 }
-function useCarousel(count: number, auto = false, align: "start" | "center" = "start") {
-  const [ref, api] = useEmblaCarousel({ align, loop: auto, skipSnaps: false, duration: 32 });
+function useCarousel(count: number, auto = false, align: "start" | "center" = "start", containScroll?: false) {
+  const [ref, api] = useEmblaCarousel({
+    align,
+    loop: auto,
+    skipSnaps: false,
+    duration: 32,
+    ...(containScroll === false ? { containScroll: false } : {}),
+  });
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [snaps, setSnaps] = useState<number[]>([]);
@@ -714,96 +731,59 @@ function Filters({
     </div>
   );
 }
-function Opportunities({ t, open }: { t: Translate; open: Open }) {
-  const [filter, setFilter] = useState("All");
-  const items = filterEntries(opportunities, filter);
-  const carousel = useCarousel(items.length);
+function Opportunities({ t }: { t: Translate }) {
   return (
     <section id="opportunities" className="section container-wide">
       <SectionHead
-        eyebrow={c("OPPORTUNITY, CLOSER TO HOME", "మన ఊరికి దగ్గరగా అవకాశాలు")}
-        title={c("Your next chapter starts here.", "మీ తదుపరి అడుగు ఇక్కడే.")}
+        eyebrow={c("OPPORTUNITY CATEGORIES", "అవకాశాల విభాగాలు")}
+        title={c("A place for future pathways.", "భవిష్యత్తు అవకాశాలకు ఒక వేదిక.")}
         t={t}
-      >
-        <CarouselControls
-          t={t}
-          prev={() => carousel.api?.scrollPrev()}
-          next={() => carousel.api?.scrollNext()}
-        />
-      </SectionHead>
+      />
       <p className="section-copy mb-7">
         {t(
           c(
-            "A place to discover pathways, find guidance, and take that first step.",
-            "మార్గాలు తెలుసుకోవడానికి, సలహా పొందడానికి, తొలి అడుగు వేయడానికి ఒక వేదిక.",
+            "The Digital Thummapala platform is preparing to bring trusted opportunities together. Listings have not been published yet.",
+            "నమ్మదగిన అవకాశాల వివరాలను ఒకచోట అందించేందుకు డిజిటల్ తుమ్మపాల వేదిక సిద్ధమవుతోంది. ప్రస్తుతం అవకాశాల జాబితాలు ప్రచురించలేదు.",
           ),
         )}
       </p>
-      <Filters
-        items={opportunities.map((o) => o.category)}
-        value={filter}
-        setValue={setFilter}
-        t={t}
-      />
-      <div className="carousel-viewport" ref={carousel.ref}>
-        <div className="carousel-track">
-          {items.map((o) => (
-            <article className="carousel-slide opportunity" key={o.id}>
-              <p className="eyebrow">{t(o.category)}</p>
-              <h3>{t(o.title)}</h3>
-              <p>
-                <MapPin size={12} />
-                {o.location && t(o.location)}
-              </p>
-              <p>
-                <CalendarDays size={12} />
-                {t(c("Last date: 30 Nov · sample", "చివరి తేదీ: నవం. 30 · నమూనా"))}
-              </p>
-              <div className="opportunity-bottom">
-                <span className="status">{o.status && t(o.status)}</span>
-                <Button
-                  size="icon"
-                  variant="editorial"
-                  aria-label={`${t(c("View opportunity", "అవకాశం చూడండి"))}: ${t(o.title)}`}
-                  onClick={() => open(o)}
-                >
-                  <ArrowUpRight />
-                </Button>
+      <div className="opportunity-category-grid">
+        {opportunityCategories.map((item) => {
+          const Icon = opportunityIcons[item.id];
+          return (
+            <article className="opportunity-category-card" key={item.id}>
+              <span className="opportunity-category-icon"><Icon aria-hidden="true" /></span>
+              <div>
+                <h3>{t(item.title)}</h3>
+                <p>{t(item.description)}</p>
               </div>
-              <span className="sample mt-3">{t(c("DEMO / SAMPLE", "డెమో / నమూనా"))}</span>
+              <span className="opportunity-status">{t(item.status)}</span>
             </article>
-          ))}
-        </div>
-      </div>
-      {items.length === 0 && (
-        <p className="section-copy">
-          {t(c("No new opportunities right now.", "ప్రస్తుతం కొత్త అవకాశాలు లేవు."))}
-        </p>
-      )}
-      <div className="carousel-progress">
-        <p className="data-note">
-          {t(
-            c(
-              "Sample opportunities — not official recruitment notifications.",
-              "నమూనా అవకాశాలు — అధికారిక ఉద్యోగ ప్రకటనలు కావు.",
-            ),
-          )}
-        </p>
-        <div className="progress-track">
-          {carousel.snaps.map((_, i) => (
-            <span key={i} className={i === carousel.index ? "active" : ""} />
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );
 }
-function Stories({ t, open }: { t: Translate; open: Open }) {
-  const carousel = useCarousel(stories.length, true, "center");
+function Stories({ t }: { t: Translate }) {
+  const carousel = useCarousel(stories.length, true, "center", false);
+  useEffect(() => {
+    if (!carousel.api) return;
+    carousel.api.scrollTo(carousel.api.selectedScrollSnap(), true);
+  }, [carousel.api]);
   return (
-    <section id="stories" className="section story-section">
+    <>
+    <section
+      id="stories"
+      className="section story-section"
+      onMouseEnter={() => carousel.setPaused(true)}
+      onMouseLeave={() => carousel.setPaused(false)}
+      onFocusCapture={() => carousel.setPaused(true)}
+      onBlurCapture={() => carousel.setPaused(false)}
+    >
       <div className="container-wide">
         <SectionHead
+          eyebrow={c("A THUMMAPALA STORY ARCHIVE", "తుమ్మపాల కథల సమాహారం")}
           title={c("Our Success Stories", "మన విజయ గాథలు")}
           t={t}
         >
@@ -821,44 +801,40 @@ function Stories({ t, open }: { t: Translate; open: Open }) {
           ref={carousel.ref}
           aria-roledescription="carousel"
           aria-label={t(c("Success stories", "విజయ గాథలు"))}
-          onMouseEnter={() => carousel.setPaused(true)}
-          onMouseLeave={() => carousel.setPaused(false)}
-          onFocusCapture={() => carousel.setPaused(true)}
-          onBlurCapture={() => carousel.setPaused(false)}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") {
+              event.preventDefault();
+              carousel.api?.scrollPrev();
+            } else if (event.key === "ArrowRight") {
+              event.preventDefault();
+              carousel.api?.scrollNext();
+            }
+          }}
         >
           <div className="carousel-track">
             {stories.map((story, i) => {
               const active = i === carousel.index;
               return (
-                <div className="carousel-slide story-slide" key={story.id} aria-hidden={!active}>
-                  <Button
-                    type="button"
-                    variant="editorial"
-                    className="story-card"
-                    tabIndex={active ? 0 : -1}
-                    aria-label={`${t(c("Read sample story", "నమూనా కథ చదవండి"))}: ${t(story.title)}`}
-                    onClick={() => open(story)}
-                  >
-                    <img loading="lazy" src={images[story.image]} alt="" />
+                <article className="carousel-slide story-slide" key={story.id} aria-hidden={!active}>
+                  <div className={`story-card ${story.id === "sports-journey" ? "story-card--portrait" : ""}`}>
+                    <img loading="lazy" src={story.image} alt={t(story.alt)} />
                     <span className="story-card-shade" aria-hidden="true" />
-                    <span className="story-card-content">
-                      <span className="story-card-label">
-                        {t(c("SAMPLE STORY", "నమూనా కథ"))} · {t(story.category)}
-                      </span>
-                      <span className="story-card-title">{t(story.title)}</span>
-                      <span className="story-card-description">{t(story.description)}</span>
-                      <span className="story-card-cta">
-                        {t(c("Read the story", "కథ చదవండి"))} <ArrowUpRight size={17} />
-                      </span>
-                    </span>
-                  </Button>
-                </div>
+                    <div className="story-card-content">
+                      <p className="story-card-label">
+                        {t(story.category)} · {String(i + 1).padStart(2, "0")}
+                      </p>
+                      <h3 className="story-card-title">{t(story.title)}</h3>
+                      <p className="story-card-description">{t(story.description)}</p>
+                    </div>
+                  </div>
+                </article>
               );
             })}
           </div>
         </div>
         <div className="carousel-progress story-progress">
-          <span className="sample">{t(imageMetadata.caption)}</span>
+          <span className="sample">{t(c("Education, community & sport", "విద్య, సమాజం, క్రీడలు"))}</span>
           <div className="flex items-center gap-4">
             <span className="sample">0{carousel.index + 1} / 0{stories.length}</span>
             <div className="progress-track" aria-hidden="true">
@@ -870,16 +846,127 @@ function Stories({ t, open }: { t: Translate; open: Open }) {
         </div>
       </div>
     </section>
+    <ImpactPeople t={t} />
+    </>
+  );
+}
+function ImpactPeople({ t }: { t: Translate }) {
+  const carousel = useCarousel(impactPeople.length, true, "center", false);
+  const videoId = getYouTubeVideoId(impactVideoUrl);
+  return (
+    <section
+      id="impact-people"
+      className="section impact-people-section"
+      onMouseEnter={() => carousel.setPaused(true)}
+      onMouseLeave={() => carousel.setPaused(false)}
+      onFocusCapture={() => carousel.setPaused(true)}
+      onBlurCapture={() => carousel.setPaused(false)}
+    >
+      <div className="container-wide">
+        <SectionHead
+          eyebrow={c("THE PEOPLE BEHIND THE JOURNEY", "ఈ ప్రయాణం వెనుక ఉన్న వ్యక్తులు")}
+          title={c("People Who Make an Impact", "ప్రభావం చూపుతున్న వ్యక్తులు")}
+          t={t}
+        >
+          <CarouselControls
+            t={t}
+            prev={() => carousel.api?.scrollPrev()}
+            next={() => carousel.api?.scrollNext()}
+          />
+        </SectionHead>
+        <p className="section-line impact-people-intro">
+          {t(c(
+            "Every journey is shaped by people who contribute their time, knowledge, energy and ideas. Meet some of the people connected to Thummapala's journey.",
+            "తమ సమయం, జ్ఞానం, శక్తి, ఆలోచనలతో ప్రతి ప్రయాణానికి వ్యక్తులు తోడ్పడతారు. తుమ్మపాల ప్రయాణంతో అనుబంధం ఉన్న కొందరిని పరిచయం చేసుకుందాం.",
+          ))}
+        </p>
+        <div
+          className="carousel-viewport impact-people-viewport"
+          ref={carousel.ref}
+          aria-roledescription="carousel"
+          aria-label={t(c("People who make an impact", "ప్రభావం చూపుతున్న వ్యక్తులు"))}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") {
+              event.preventDefault();
+              carousel.api?.scrollPrev();
+            } else if (event.key === "ArrowRight") {
+              event.preventDefault();
+              carousel.api?.scrollNext();
+            }
+          }}
+        >
+          <div className="carousel-track">
+            {impactPeople.map((person, i) => {
+              const active = i === carousel.index;
+              return (
+                <article
+                  className="carousel-slide impact-person-slide"
+                  key={person.id}
+                  aria-hidden={!active}
+                >
+                  <div className="impact-person-card">
+                    <div className="impact-person-photo">
+                      <img src={person.image} alt={t(person.alt)} loading="lazy" />
+                    </div>
+                    <div className="impact-person-copy">
+                      <span className="impact-person-index">{String(i + 1).padStart(2, "0")} / {String(impactPeople.length).padStart(2, "0")}</span>
+                      <h3>{t(person.name)}</h3>
+                      <p className="impact-person-role">{t(person.role)}</p>
+                      <p className="impact-person-description">{t(person.description)}</p>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+        <div className="impact-people-progress">
+          <div className="progress-track" aria-hidden="true">
+            {carousel.snaps.map((_, i) => (
+              <span key={i} className={i === carousel.index ? "active" : ""} />
+            ))}
+          </div>
+        </div>
+        <div className="impact-video-showcase">
+          {videoId ? (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+              title={t(c("Our Journey in Action", "మన ప్రయాణం కార్యరూపంలో"))}
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          ) : (
+            <div className="impact-video-placeholder">
+              <img src={stories[5].image} alt="" loading="lazy" />
+              <span className="impact-video-shade" aria-hidden="true" />
+              <div className="impact-video-content">
+                <span className="impact-video-play" aria-hidden="true"><Play fill="currentColor" /></span>
+                <p className="eyebrow">{t(c("VIDEO COMING SOON", "వీడియో త్వరలో"))}</p>
+                <h3>{t(c("Our Journey in Action", "మన ప్రయాణం కార్యరూపంలో"))}</h3>
+                <p>{t(c(
+                  "A glimpse into the people, activities and moments shaping Thummapala's journey.",
+                  "తుమ్మపాల ప్రయాణాన్ని మలుస్తున్న వ్యక్తులు, కార్యక్రమాలు, క్షణాల సమాహారం.",
+                ))}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
 function Agrotech({ t, open }: { t: Translate; open: Open }) {
+  const pageVisual = pageIntros.agrotech;
   return (
     <section id="agrotech">
       <div className="full-photo-story">
         <img
           loading="lazy"
-          src={images.agriculture}
-          alt="Representative Andhra farmer inspecting rice crops"
+          src={pageVisual.contentImageUrl ?? images.agriculture}
+          alt={pageVisual.contentAlt ? t(pageVisual.contentAlt) : ""}
         />
         <div className="container-wide">
           <div className="full-photo-content">
@@ -910,7 +997,7 @@ function Agrotech({ t, open }: { t: Translate; open: Open }) {
             </div>
           </div>
         </div>
-        <span className="photo-credit">{t(imageMetadata.caption)}</span>
+        <span className="photo-credit">{t(pageVisual.contentCaption ?? imageMetadata.caption)}</span>
       </div>
       <div className="container-wide initiative-list">
         {agricultureInitiatives.map((e, i) => (
@@ -930,6 +1017,7 @@ function Agrotech({ t, open }: { t: Translate; open: Open }) {
   );
 }
 function Sports({ t, open }: { t: Translate; open: Open }) {
+  const pageVisual = pageIntros.sports;
   const carousel = useCarousel(sportsEntries.length);
   return (
     <section id="sports" className="section sports-section container-wide">
@@ -955,10 +1043,10 @@ function Sports({ t, open }: { t: Translate; open: Open }) {
         <div>
           <img
             loading="lazy"
-            src={images.sports}
-            alt="Representative Kho-Kho game on an Andhra school ground"
+            src={pageVisual.contentImageUrl ?? images.sports}
+            alt={pageVisual.contentAlt ? t(pageVisual.contentAlt) : ""}
           />
-          <p className="photo-caption">{t(imageMetadata.caption)}</p>
+          <p className="photo-caption">{t(pageVisual.contentCaption ?? imageMetadata.caption)}</p>
         </div>
       </div>
       <div className="section-head">
@@ -1000,147 +1088,128 @@ function Sports({ t, open }: { t: Translate; open: Open }) {
     </section>
   );
 }
-function Activities({ t, open }: { t: Translate; open: Open }) {
-  const [all, setAll] = useState(false);
+function EventsActivities({ t }: { t: Translate }) {
+  const [filter, setFilter] = useState("All");
+  const filteredEvents = events.filter((event) => filter === "All" || event.category.en === filter);
+  const eventCarousel = useCarousel(filteredEvents.length, true, "center", false);
+  useEffect(() => {
+    if (!eventCarousel.api) return;
+    eventCarousel.api.reInit();
+    eventCarousel.api.scrollTo(0, true);
+  }, [eventCarousel.api, filter]);
   return (
-    <section id="activities" className="section activity-section">
+    <section
+      id="events-activities"
+      className="section events-activities-section"
+      onMouseEnter={() => eventCarousel.setPaused(true)}
+      onMouseLeave={() => eventCarousel.setPaused(false)}
+      onFocusCapture={() => eventCarousel.setPaused(true)}
+      onBlurCapture={(event) => {
+        const nextTarget = event.relatedTarget;
+        if (!(nextTarget instanceof Node) || !event.currentTarget.contains(nextTarget)) {
+          eventCarousel.setPaused(false);
+        }
+      }}
+    >
       <div className="container-wide">
         <SectionHead
-          eyebrow={c("THE EVERYDAY, AND THE EXTRAORDINARY", "రోజువారీ జీవితం. ప్రత్యేక క్షణాలు.")}
-          title={c("Village Activities", "గ్రామ కార్యక్రమాలు")}
+          eyebrow={c("GOOD THINGS HAPPEN TOGETHER", "కలిసి చేస్తే మంచి జరుగుతుంది")}
+          title={c("Thummapala Events", "తుమ్మపాల కార్యక్రమాలు")}
           t={t}
         >
-          <TextLink onClick={() => setAll(!all)}>
-            {t(
-              all ? c("Show less", "తక్కువ చూపించండి") : c("All activities", "అన్ని కార్యక్రమాలు"),
-            )}
-          </TextLink>
+          <CarouselControls
+            t={t}
+            prev={() => eventCarousel.api?.scrollPrev()}
+            next={() => eventCarousel.api?.scrollNext()}
+          />
         </SectionHead>
-        <div className="activity-layout">
-          <article className="activity-feature">
-            <img loading="lazy" src={images.education} alt="Representative students at school" />
-            <p className="sample mt-5">18 NOV · {t(c("EDUCATION / SAMPLE", "చదువు / నమూనా"))}</p>
-            <h3>
-              {t(c("Small moments.\nMeaningful beginnings.", "చిన్న క్షణాలు.\nమంచి ఆరంభాలు."))}
-            </h3>
-            <p className="section-copy">
-              {t(
-                c(
-                  "A glimpse of the learning, energy and shared effort we envision for our community.",
-                  "మన కమ్యూనిటీ కోసం ఆశించే అభ్యాసం, ఉత్సాహం, ఉమ్మడి కృషి.",
-                ),
-              )}
-            </p>
-            <TextLink onClick={() => activities[0] && open(activities[0])}>
-              {t(c("Inside the activity", "కార్యక్రమం గురించి"))}
-            </TextLink>
-          </article>
-          <div>
-            {activities.slice(0, all ? 8 : 5).map((a) => (
-              <article className="activity-row" key={a.id}>
-                <span className="activity-date">{a.date}</span>
-                <div>
-                  <h3>{t(a.category)}</h3>
-                  <p>{t(c("Thummapala · Sample activity", "తుమ్మపాల · నమూనా కార్యక్రమం"))}</p>
-                </div>
-                <Button
-                  variant="editorial"
-                  size="icon"
-                  aria-label={t(a.category)}
-                  onClick={() => open(a)}
-                >
-                  <ArrowUpRight />
-                </Button>
+        <Filters
+          items={events.map((event) => event.category)}
+          value={filter}
+          setValue={setFilter}
+          t={t}
+        />
+        <p className="sample events-activities-demo-note">
+          {t(c("Event ideas shown as placeholders · details will be confirmed before publication", "ఈవెంట్ ఆలోచనలు నమూనా మాత్రమే · ప్రచురణకు ముందు వివరాలు నిర్ధారిస్తాం"))}
+        </p>
+        <div id="events" className="events-activities-event-feature">
+          <div
+            className="carousel-viewport"
+            ref={eventCarousel.ref}
+            aria-roledescription="carousel"
+            aria-label={t(c("Thummapala event ideas", "తుమ్మపాల ఈవెంట్ ఆలోచనలు"))}
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                eventCarousel.api?.scrollPrev();
+              } else if (event.key === "ArrowRight") {
+                event.preventDefault();
+                eventCarousel.api?.scrollNext();
+              }
+            }}
+          >
+            <div className="carousel-track">
+              {filteredEvents.map((event, i) => {
+                const active = i === eventCarousel.index;
+                return (
+                  <article
+                    className="event-card carousel-slide"
+                    key={event.id}
+                    data-active={active}
+                    aria-hidden={!active}
+                  >
+                    <div className="event-info">
+                      <span className="eyebrow">{t(event.category)}</span>
+                      <h3>{t(event.title)}</h3>
+                      <p className="event-description">{t(event.description)}</p>
+                      <p className="event-context">
+                        <MapPin size={13} aria-hidden="true" />
+                        {t(event.location)}
+                      </p>
+                      <div className="event-footer">
+                        <span className="status">{t(event.status)}</span>
+                      </div>
+                    </div>
+                    <div className="event-image">
+                      <img src={event.image} alt={t(event.alt)} loading="lazy" />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+          <div className="carousel-progress">
+            <span className="sample">
+              {t(c("Placeholder event concepts · no confirmed listings", "ఈవెంట్ నమూనాలు · నిర్ధారిత జాబితాలు లేవు"))}
+            </span>
+            <div className="progress-track" aria-hidden="true">
+              {eventCarousel.snaps.map((_, i) => (
+                <span key={i} className={i === eventCarousel.index ? "active" : ""} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div id="activities" className="events-activities-activity-feature">
+          <div className="events-activities-subhead">
+            <div>
+              <p className="eyebrow">{t(c("LIFE IN THUMMAPALA", "తుమ్మపాలలో జీవితం"))}</p>
+              <h3>{t(c("Village Activities", "గ్రామ కార్యకలాపాలు"))}</h3>
+              <p>{t(c("A glimpse of what is happening around the village.", "మన ఊరిలో జరుగుతున్న వాటి సంగ్రహం."))}</p>
+            </div>
+          </div>
+          <div className="activity-tiles">
+            {activities.map((activity) => (
+              <article className="activity-tile" key={activity.id}>
+                <img src={activity.image} alt={t(activity.alt)} loading="lazy" />
+                <span>
+                  <small>{t(activity.label)}</small>
+                  {t(activity.title)}
+                </span>
               </article>
             ))}
-            {!all && (
-              <TextLink onClick={() => setAll(true)}>
-                {t(c("View all 8 activities", "8 కార్యక్రమాలు చూడండి"))}
-              </TextLink>
-            )}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-function Events({ t, open }: { t: Translate; open: Open }) {
-  const [filter, setFilter] = useState("All");
-  const items = filterEntries(events, filter);
-  const carousel = useCarousel(items.length, true, "center");
-  return (
-    <section id="events" className="section container-wide">
-      <SectionHead
-        eyebrow={c("GOOD THINGS HAPPEN TOGETHER", "కలిసి చేస్తే మంచి జరుగుతుంది")}
-        title={c("Thummapala Events", "తుమ్మపాల కార్యక్రమాలు")}
-        t={t}
-      >
-        <CarouselControls
-          t={t}
-          prev={() => carousel.api?.scrollPrev()}
-          next={() => carousel.api?.scrollNext()}
-        />
-      </SectionHead>
-      <Filters items={events.map((e) => e.category)} value={filter} setValue={setFilter} t={t} />
-      <div
-        className="carousel-viewport"
-        ref={carousel.ref}
-        onMouseEnter={() => carousel.setPaused(true)}
-        onMouseLeave={() => carousel.setPaused(false)}
-        onFocusCapture={() => carousel.setPaused(true)}
-      >
-        <div className="carousel-track">
-          {items.map((e, i) => (
-            <article className="event-card carousel-slide" key={e.id} data-active={i === carousel.index}>
-              <div className="event-image">
-                <img
-                  loading="lazy"
-                  src={images[e.image]}
-                  alt={t(e.category) + " · Representative visual"}
-                />
-                <span className="event-date">{e.date}</span>
-              </div>
-              <div className="event-info">
-                <span className="eyebrow text-earth">{t(e.category)}</span>
-                <h3>{t(e.title)}</h3>
-                <p>
-                  <MapPin size={11} />
-                  {e.location && t(e.location)}
-                </p>
-                <div className="event-footer">
-                  <span className="status">{e.status && t(e.status)}</span>
-                  <Button
-                    variant="editorial"
-                    size="icon"
-                    aria-label={`${t(c("View event", "కార్యక్రమం చూడండి"))}: ${t(e.title)}`}
-                    onClick={() => open(e)}
-                  >
-                    <ArrowUpRight />
-                  </Button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-      <div className="carousel-progress">
-        <span className="sample">
-          {t(c("ALL DATES & EVENTS ARE SAMPLES", "అన్ని తేదీలు, కార్యక్రమాలు నమూనాలు"))}
-        </span>
-        <div className="flex items-center gap-4">
-          <div className="progress-track">
-            {carousel.snaps.map((_, i) => (
-              <span key={i} className={i === carousel.index ? "active" : ""} />
-            ))}
-          </div>
-          <Button
-            variant="editorial"
-            size="icon"
-            aria-label={carousel.paused ? "Play events" : "Pause events"}
-            onClick={() => carousel.setPaused(!carousel.paused)}
-          >
-            {carousel.paused ? <Play /> : <Pause />}
-          </Button>
         </div>
       </div>
     </section>
@@ -1262,7 +1331,7 @@ function Gallery({
         t={t}
       />
       <div className="gallery-grid">
-        {items.slice(0, all ? 24 : 12).map((g) => (
+        {items.slice(0, all ? items.length : 12).map((g) => (
           <Button
             variant="editorial"
             className="gallery-item"
@@ -1271,9 +1340,9 @@ function Gallery({
             onClick={() => onSelect(g, items)}
           >
             <img
-              src={images[g.image]}
+              src={g.imageUrl ?? images[g.image]}
               loading="lazy"
-              alt={t(g.title) + " · Representative visual"}
+              alt={t(g.alt ?? g.title)}
             />
             <span>
               {t(g.title)} <ArrowUpRight className="inline size-3" />
@@ -1287,7 +1356,7 @@ function Gallery({
             {t(
               all
                 ? c("Show fewer moments", "కొన్ని ఫోటోలు చూపించండి")
-                : c("Explore all 24 moments", "24 ఫోటోలు చూడండి"),
+                : c(`Explore all ${items.length} moments`, `${items.length} ఫోటోలు చూడండి`),
             )}
           </TextLink>
         </div>
@@ -1295,8 +1364,8 @@ function Gallery({
       <p className="data-note text-center">
         {t(
           c(
-            "Representative generated visuals, not actual Thummapala photographs. Sample compositions await client imagery.",
-            "ప్రాతినిధ్య చిత్రాలు, నిజమైన తుమ్మపాల ఫోటోలు కావు. అసలైన చిత్రాల కోసం ఎదురుచూస్తున్న నమూనాలు.",
+            "A growing visual collection of Thummapala and clearly marked future concepts.",
+            "తుమ్మపాల దృశ్యాలు, స్పష్టంగా గుర్తించిన భవిష్యత్ ఆలోచనలతో పెరుగుతున్న చిత్రాల సమాహారం.",
           ),
         )}
       </p>
@@ -1603,7 +1672,7 @@ function Detail({
                 controls
                 playsInline
                 preload="metadata"
-                poster={images[entry.image]}
+                poster={entry.imageUrl ?? images[entry.image]}
                 onTouchStart={(e) => {
                   touch.current = e.touches[0]?.clientX ?? 0;
                 }}
@@ -1618,8 +1687,8 @@ function Detail({
             ) : (
               <img
                 className={`detail-photo ${isGallery ? "lightbox-photo" : ""}`}
-                src={images[entry.image]}
-                alt={t(entry.title) + " · Representative visual"}
+                src={entry.imageUrl ?? images[entry.image]}
+                alt={t(entry.alt ?? entry.title)}
                 onTouchStart={(e) => {
                   touch.current = e.touches[0]?.clientX ?? 0;
                 }}
@@ -1790,17 +1859,22 @@ function AboutVillage({ t }: { t: Translate }) {
           <img loading="lazy" src={images.village} alt="Representative rural Andhra landscape with paddy fields and palm trees" />
         </div>
         <div className="split-text">
-          <p className="eyebrow">{t(c("Small-town roots. Big-hearted dreams.", "మన ఊరి మూలాలు. పెద్ద ఆశయాలు."))}</p>
-          <h2 className="section-title">{t(c("About Our Village", "మన ఊరి గురించి"))}</h2>
+          <p className="eyebrow">
+            {t(c("ROOTED IN COMMUNITY. MOVING TOWARDS THE FUTURE.", "సమాజంలో వేళ్లూనుకుని, భవిష్యత్తు వైపు అడుగులు."))}
+          </p>
+          <h2 className="section-title">{t(c("About Thummapala", "తుమ్మపాల గురించి"))}</h2>
           <p className="section-copy">
             {t(
               c(
-                "Thummapala is a village shaped by its people, farms, schools, sports and community spirit. From learning and agriculture to youth activities, this is a place where people come together to build a better future.",
-                "తుమ్మపాల మన ప్రజలు, పొలాలు, పాఠశాలలు, క్రీడలు, కమ్యూనిటీ స్ఫూర్తితో రూపొందిన ఊరు. చదువు, వ్యవసాయం నుంచి యువత కార్యక్రమాల వరకు — మంచి భవిష్యత్తు కోసం అందరం కలిసి సాగుతున్నాం.",
+                "Thummapala is a vibrant village in Anakapalli, Andhra Pradesh, shaped by its people, agricultural roots, education, sports and strong community spirit. With a long-standing connection to the region's agricultural and local industrial landscape, Thummapala continues to grow while looking towards new opportunities for its people and future generations.",
+                "ఆంధ్రప్రదేశ్‌లోని అనకాపల్లి జిల్లాలో ఉన్న తుమ్మపాల, తన ప్రజలు, వ్యవసాయ మూలాలు, విద్య, క్రీడలు, బలమైన సమాజ బంధాలతో సజీవంగా నిలిచే గ్రామం. ఈ ప్రాంతపు వ్యవసాయం, స్థానిక పరిశ్రమలతో దీర్ఘకాల అనుబంధం కలిగిన తుమ్మపాల, తన ప్రజలకు మరియు రాబోయే తరాలకు కొత్త అవకాశాల వైపు ముందుకు సాగుతోంది.",
               ),
             )}
           </p>
-          <MoreLink to="/our-village">{t(c("Explore Our Village", "మన ఊరిని చూడండి"))}</MoreLink>
+          <p className="section-line">
+            {t(c("Anakapalli Mandal · Anakapalli District · Andhra Pradesh", "అనకాపల్లి మండలం · అనకాపల్లి జిల్లా · ఆంధ్రప్రదేశ్"))}
+          </p>
+          <MoreLink to="/our-village">{t(c("Explore Thummapala", "తుమ్మపాల గురించి తెలుసుకోండి"))}</MoreLink>
         </div>
       </div>
     </section>
@@ -1821,6 +1895,7 @@ function FocusAreas({ t }: { t: Translate }) {
     const select = () => setSelected(api.selectedScrollSnap() % focusAreas.length);
     select();
     api.on("select", select);
+    api.scrollTo(api.selectedScrollSnap(), true);
     return () => {
       api.off("select", select);
     };
@@ -1844,6 +1919,18 @@ function FocusAreas({ t }: { t: Translate }) {
           ref={ref}
           aria-roledescription="carousel"
           aria-label={t(c("Our focus areas", "మన ముఖ్య రంగాలు"))}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") {
+              event.preventDefault();
+              pauseForInteraction();
+              api?.scrollPrev();
+            } else if (event.key === "ArrowRight") {
+              event.preventDefault();
+              pauseForInteraction();
+              api?.scrollNext();
+            }
+          }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocusCapture={() => setPaused(true)}
@@ -1868,7 +1955,12 @@ function FocusAreas({ t }: { t: Translate }) {
                     }
                   }}
                 >
-                  <img loading="lazy" src={images[f.image]} alt={`${t(f.title)} · Representative visual`} />
+                  <img
+                    loading="lazy"
+                    src={f.image}
+                    alt={t(f.alt)}
+                    data-mobile-position={f.mobilePosition}
+                  />
                   <div className="focus-card-body">
                     <span className="focus-number">0{i + 1}</span>
                     <h3>{t(f.title)}</h3>
@@ -1924,46 +2016,35 @@ function EducationPreview({ t }: { t: Translate }) {
   );
 }
 function OpportunityPreview({ t }: { t: Translate }) {
-  const icons = [Award, GraduationCap, Monitor, BookOpen];
   return (
     <section id="opportunities-preview" className="section container-wide">
-      <HomeHead title={c("Opportunities", "అవకాశాలు")} line={c("Find a pathway that fits your next step.", "మీ తదుపరి అడుగుకు సరైన దారి.")} t={t}>
+      <HomeHead
+        title={c("Opportunities", "అవకాశాలు")}
+        line={c("Opportunity information for Thummapala is being prepared for the future.", "తుమ్మపాల కోసం అవకాశాల సమాచారం సిద్ధమవుతోంది.")}
+        t={t}
+      >
         <MoreLink to="/opportunities">{t(c("View Opportunities", "అవకాశాలు చూడండి"))}</MoreLink>
       </HomeHead>
       <div className="opp-tiles">
-        {opportunityPreview.map((o, i) => {
-          const Icon = icons[i] ?? BookOpen;
+        {opportunityCategories.map((item) => {
+          const Icon = opportunityIcons[item.id];
           return (
-            <Link to="/opportunities" className="opp-tile" key={o.en}>
+            <Link
+              to="/opportunities"
+              className="opp-tile"
+              key={item.id}
+              aria-label={`${t(item.title)}. ${t(item.preview)} ${t(item.status)}. ${t(c("View opportunities", "అవకాశాలు చూడండి"))}`}
+            >
               <Icon aria-hidden="true" strokeWidth={1.5} />
-              <span>{t(o)}</span>
-              <ArrowUpRight size={16} aria-hidden="true" />
+              <span className="opp-tile-copy">
+                <strong>{t(item.title)}</strong>
+                <span>{t(item.preview)}</span>
+                <small className="opportunity-status">{t(item.status)}</small>
+              </span>
+              <ArrowUpRight className="opp-tile-arrow" size={16} aria-hidden="true" />
             </Link>
           );
         })}
-      </div>
-      <p className="data-note">{t(c("Sample categories — not official recruitment notifications.", "నమూనా వర్గాలు — అధికారిక ఉద్యోగ ప్రకటనలు కావు."))}</p>
-    </section>
-  );
-}
-function ActivitiesPreview({ t, open }: { t: Translate; open: Open }) {
-  return (
-    <section id="activities-preview" className="section activities-preview">
-      <div className="container-wide">
-        <HomeHead title={c("Village Activities", "గ్రామ కార్యక్రమాలు")} line={c("A glimpse of what is happening around the village.", "మన ఊరిలో జరుగుతున్న వాటి సంగ్రహం.")} t={t}>
-          <MoreLink to="/activities">{t(c("All activities", "అన్ని కార్యక్రమాలు"))}</MoreLink>
-        </HomeHead>
-        <div className="activity-tiles">
-          {activities.slice(0, 6).map((a) => (
-            <button type="button" className="activity-tile" key={a.id} onClick={() => open(a)}>
-              <img loading="lazy" src={images[a.image]} alt="" />
-              <span>
-                <small>{a.date} · {t(c("Sample", "నమూనా"))}</small>
-                {t(a.category)}
-              </span>
-            </button>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -1981,7 +2062,7 @@ function ComingSoon({ t, open }: { t: Translate; open: Open }) {
             {futureInitiatives.map((f, i) => (
               <div className="carousel-slide soon-slide" key={f.id}>
                 <Button type="button" variant="editorial" className="soon-card" onClick={() => open(f)} aria-label={`${t(f.status ?? c("Future initiative", "భవిష్యత్తు కార్యక్రమం"))}: ${t(f.title)}`}>
-                  <img loading="lazy" src={images[f.image]} alt="" />
+                  <img loading="lazy" src={f.imageUrl ?? images[f.image]} alt={t(f.alt ?? f.title)} />
                   <span className="soon-shade" aria-hidden="true" />
                   <span className="soon-number">0{i + 1}</span>
                   <span className="soon-status">{f.status && t(f.status)}</span>
@@ -2012,12 +2093,12 @@ function GalleryPreview({ t, onSelect }: { t: Translate; onSelect: (entry: Entry
       <div className="gallery-grid gallery-preview-grid">
         {items.map((g) => (
           <Button variant="editorial" className="gallery-item reveal" key={g.id} aria-label={`${t(c("Open photograph", "ఫోటో తెరవండి"))}: ${t(g.title)}`} onClick={() => onSelect(g, items)}>
-            <img src={images[g.image]} loading="lazy" alt={t(g.title) + " · Representative visual"} />
+            <img src={g.imageUrl ?? images[g.image]} loading="lazy" alt={t(g.alt ?? g.title)} />
             <span>{t(g.title)}</span>
           </Button>
         ))}
       </div>
-      <p className="data-note">{t(c("Representative visuals, not actual Thummapala photographs.", "ప్రాతినిధ్య చిత్రాలు, నిజమైన తుమ్మపాల ఫోటోలు కావు."))}</p>
+      <p className="data-note">{t(c("Moments across village life, learning, sports and community.", "గ్రామ జీవితం, అభ్యాసం, క్రీడలు, సమాజానికి సంబంధించిన క్షణాలు."))}</p>
     </section>
   );
 }
@@ -2031,9 +2112,8 @@ export function VillageExperience() {
           <FocusAreas t={t} />
           <EducationPreview t={t} />
           <OpportunityPreview t={t} />
-          <Stories t={t} open={open} />
-          <Events t={t} open={open} />
-          <ActivitiesPreview t={t} open={open} />
+          <Stories t={t} />
+          <EventsActivities t={t} />
           <ComingSoon t={t} open={open} />
           <GalleryPreview t={t} onSelect={showGallery} />
           <Location t={t} />
@@ -2047,15 +2127,23 @@ function PageHero({ page, t }: { page: PageKey; t: Translate }) {
   const info = pageIntros[page];
   return (
     <section id="home" className="page-hero" data-page={page}>
-      <img className="page-hero-photo" src={images[info.image]} alt="" fetchPriority="high" />
+      <img
+        className="page-hero-photo"
+        src={info.heroImageUrl ?? images[info.image]}
+        alt={info.heroAlt ? t(info.heroAlt) : ""}
+        fetchPriority="high"
+      />
       <div className="hero-shade" aria-hidden="true" />
       <div className="container-wide page-hero-body">
         <div className="page-hero-copy">
           <nav className="crumbs" aria-label="Breadcrumb">
             <Link to="/">{t(c("Home", "హోమ్"))}</Link>
             <span aria-hidden="true">/</span>
-            <span>{t(info.title)}</span>
+            <span>{t(page === "opportunities" ? c("Opportunities", "అవకాశాలు") : info.title)}</span>
           </nav>
+            {page === "opportunities" && (
+              <p className="eyebrow page-hero-eyebrow">{t(c("OPPORTUNITIES", "అవకాశాలు"))}</p>
+            )}
           <h1>{t(info.title)}</h1>
           <p>{t(info.line)}</p>
         </div>
@@ -2085,7 +2173,7 @@ function PageContent({ page, ctx }: { page: PageKey; ctx: PageContext }) {
       return (
         <>
           <Village t={t} />
-          <ActivitiesPreview t={t} open={open} />
+          <EventsActivities t={t} />
           <Location t={t} />
         </>
       );
@@ -2101,13 +2189,12 @@ function PageContent({ page, ctx }: { page: PageKey; ctx: PageContext }) {
     case "sports":
       return <Sports t={t} open={open} />;
     case "opportunities":
-      return <Opportunities t={t} open={open} />;
+      return <Opportunities t={t} />;
     case "events":
-      return <Events t={t} open={open} />;
     case "activities":
-      return <Activities t={t} open={open} />;
+      return <EventsActivities t={t} />;
     case "stories":
-      return <Stories t={t} open={open} />;
+      return <Stories t={t} />;
     case "gallery":
       return <Gallery t={t} onSelect={showGallery} />;
     case "contact":
