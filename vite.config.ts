@@ -1,9 +1,16 @@
-// The shared TanStack Start config provides the project's Vite plugins and build defaults.
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import viteTsConfigPaths from "vite-tsconfig-paths";
+import { nitro } from "nitro/vite";
 
 export default defineConfig({
-  tanstackStart: {
-    // Use the server entry that wraps SSR errors.
-    server: { entry: "server" },
-  },
+  plugins: [
+    tailwindcss(),
+    viteTsConfigPaths(),
+    tanstackStart({ server: { entry: "server" } }),
+    viteReact(),
+    ...(process.env.npm_lifecycle_event === "build" ? [nitro({ preset: "vercel" })] : []),
+  ],
 });

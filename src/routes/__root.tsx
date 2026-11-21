@@ -71,26 +71,26 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    // Each content route, / included, must still set its own head(). Never add og:image or
-    // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Digital Thummapala | Thummapala Village" },
+      { title: "Digital Thummapala | Thummapala — Our Village. Our People. Our Future." },
       {
         name: "description",
         content:
           "Digital Thummapala — a digital platform for Thummapala village, connecting its people, education, agriculture, sports, opportunities, events and future initiatives.",
       },
       { name: "author", content: "Digital Thummapala" },
-      { property: "og:title", content: "Digital Thummapala | Thummapala Village" },
+      { property: "og:title", content: "Digital Thummapala | Thummapala — Our Village. Our People. Our Future." },
       {
         property: "og:description",
         content:
           "A digital platform connecting Thummapala village, its people, education, agriculture, sports, opportunities and future.",
       },
+      { property: "og:image", content: "/images/digital-thummapala-village.png" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/images/digital-thummapala-village.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -104,6 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/favicon.svg" },
     ],
   }),
   shellComponent: RootShell,

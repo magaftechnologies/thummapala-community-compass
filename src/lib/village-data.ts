@@ -468,14 +468,14 @@ export const stories = [
 export const impactPeople = [
   {
     id: "dantuluri-vv-gopala-raju",
-    name: c("Dantuluri V V Gopala Raju Garu", "దంతులూరి V V గోపాల రాజు గారు"),
-    role: c("Site donor · High school, roads and cement roads", "స్థల దాత · హై స్కూల్, రహదారులు, సిమెంట్ రోడ్లు"),
+    name: c("Dantuluri V. V. Gopala Raju Garu", "దంతులూరి V. V. గోపాల రాజు గారు"),
+    role: c("Site donor · High school; roads and cement roads", "హై స్కూల్ స్థలదాత · రహదారులు, సిమెంట్ రోడ్లు"),
     description: c(
-      "Recognized as a site donor for the high school, roads and cement roads in Thummapala.",
-      "తుమ్మపాలలో హై స్కూల్, రహదారులు, సిమెంట్ రోడ్లకు స్థల దాతగా గుర్తింపు పొందారు.",
+      "Contributed as a site donor for the high school and supported roads and cement roads in Thummapala.",
+      "తుమ్మపాలలో హై స్కూల్‌కు స్థలదాతగా తోడ్పడారు; రహదారులు, సిమెంట్ రోడ్లకు మద్దతు ఇచ్చారు.",
     ),
     image: "/images/thummapala-impact-dantuluri-vv-gopala-raju.jpeg",
-    alt: c("Portrait of Dantuluri V V Gopala Raju Garu", "దంతులూరి V V గోపాల రాజు గారు"),
+    alt: c("Portrait of Dantuluri V. V. Gopala Raju Garu", "దంతులూరి V. V. గోపాల రాజు గారు"),
   },
   {
     id: "pet-master",

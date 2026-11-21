@@ -4,7 +4,7 @@ import { VillageExperience } from "@/components/village/experience";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Digital Thummapala | Thummapala Village" },
+      { title: "Digital Thummapala | Thummapala — Our Village. Our People. Our Future." },
       {
         name: "description",
         content:
@@ -25,7 +25,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return <VillageExperience />;
 }

@@ -78,13 +78,13 @@ describe("Village content safeguards", () => {
   });
   it("keeps impact profiles and the configurable video placeholder ready", () => {
     expect(impactPeople.map((person) => [person.name.en, person.role.en])).toEqual([
-      ["Dantuluri V V Gopala Raju Garu", "Site donor · High school, roads and cement roads"],
+      ["Dantuluri V. V. Gopala Raju Garu", "Site donor · High school; roads and cement roads"],
       ["Peela veeru Naidu", "Physical Education Teacher · P.T. Sir"],
       ["Adari Govindarao", "School Support · Education Support"],
       ["Patakamsetti Balaram", "Chairman"],
       ["Ajay Kamadhenu", "Digital Marketer & Digital Creator"],
     ]);
-    expect(impactPeople[0]?.name.te).toBe("దంతులూరి V V గోపాల రాజు గారు");
+    expect(impactPeople[0]?.name.te).toBe("దంతులూరి V. V. గోపాల రాజు గారు");
     expect(impactPeople[0]?.image).toBe("/images/thummapala-impact-dantuluri-vv-gopala-raju.jpeg");
     expect(impactPeople.every((person) => person.alt.en.length > 0 && person.alt.te.length > 0)).toBe(true);
     expect(impactVideoUrl).toContain("YOUR_VIDEO_ID");
