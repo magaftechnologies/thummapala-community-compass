@@ -458,6 +458,14 @@ export const stories = [
 ] as const;
 export const impactPeople = [
   {
+    id: "adari-jagadheeswari",
+    name: c("Adari Jagadheeswari", "అడారి జగదీశ్వరి"),
+    role: c("W/o Govind rao", "గోవింద్ రావు సతీమణి"),
+    description: c("President", "ప్రెసిడెంట్"),
+    image: "/images/thummapala-impact-adari-jagadheeswari.jpeg",
+    alt: c("Adari Jagadheeswari — President", "అడారి జగదీశ్వరి — ప్రెసిడెంట్"),
+  },
+  {
     id: "dantuluri-vv-gopala-raju",
     name: c("Dantuluri V V Gopala Raju Garu", "దంతులూరి V V గోపాల రాజు గారు"),
     role: c("Site donor · High school, roads and cement roads", "హై స్కూల్ స్థలదాత · రహదారులు, సిమెంట్ రోడ్లు"),

@@ -77,7 +77,11 @@ const opportunityIcons = {
 function Brand() {
   return (
     <Link className="brand" to="/" aria-label="Digital Thummapala home">
-      <Sprout strokeWidth={1.3} />
+      <img
+        className="brand-logo"
+        src="/images/thummapala-gram-samakhya-logo.png"
+        alt="Thummapala Gram Samakhya logo"
+      />
       <span>
         <strong>DIGITAL THUMMAPALA</strong>
         <small>తుమ్మపాల · Growing together</small>
