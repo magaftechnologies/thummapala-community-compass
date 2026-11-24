@@ -13,7 +13,7 @@ export type EnquiryErrors = Partial<Record<EnquiryField, EnquiryIssue>>;
 
 export function validateEnquiry(values: EnquiryValues): EnquiryErrors {
   const errors: EnquiryErrors = {};
-  const requiredFields: EnquiryField[] = ["name", "phone", "email", "audience", "interest", "message"];
+  const requiredFields: EnquiryField[] = ["name", "phone", "message"];
 
   for (const field of requiredFields) {
     if (!values[field].trim()) errors[field] = "required";

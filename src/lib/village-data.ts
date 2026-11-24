@@ -278,15 +278,6 @@ export const heroSlides = [
     path: "/our-village",
     category: c("Sugar factory", "చక్కెర కర్మాగారం"),
   },
-  {
-    image: "/images/thummapala-library-community-celebration.png",
-    alt: c("Children and community members gathered with books at a Thummapala library celebration", "తుమ్మపాల గ్రంథాలయ వేడుకలో పుస్తకాలతో కూడిన పిల్లలు, సమాజ సభ్యులు"),
-    title: c("Thummapala Library", "తుమ్మపాల గ్రంథాలయం"),
-    subtitle: c("A place to read, learn and grow.", "చదవడానికి, నేర్చుకోవడానికి, ఎదగడానికి ఒక స్థలం."),
-    cta: c("Explore the Library", "గ్రంథాలయాన్ని చూడండి"),
-    path: "/library",
-    category: c("Library & Learning", "గ్రంథాలయం & అభ్యాసం"),
-  },
 ] satisfies {
   image: string;
   mobilePosition?: "left" | "center" | "right";
@@ -468,8 +459,8 @@ export const stories = [
 export const impactPeople = [
   {
     id: "dantuluri-vv-gopala-raju",
-    name: c("Dantuluri V. V. Gopala Raju Garu", "దంతులూరి V. V. గోపాల రాజు గారు"),
-    role: c("Site donor · High school; roads and cement roads", "హై స్కూల్ స్థలదాత · రహదారులు, సిమెంట్ రోడ్లు"),
+    name: c("Dantuluri V V Gopala Raju Garu", "దంతులూరి V V గోపాల రాజు గారు"),
+    role: c("Site donor · High school, roads and cement roads", "హై స్కూల్ స్థలదాత · రహదారులు, సిమెంట్ రోడ్లు"),
     description: c(
       "Contributed as a site donor for the high school and supported roads and cement roads in Thummapala.",
       "తుమ్మపాలలో హై స్కూల్‌కు స్థలదాతగా తోడ్పడారు; రహదారులు, సిమెంట్ రోడ్లకు మద్దతు ఇచ్చారు.",

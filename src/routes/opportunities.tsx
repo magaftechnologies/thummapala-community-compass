@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InnerPage } from "@/components/village/experience";
+import { getPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/opportunities")({
-  head: () => ({
-    meta: [
-      { title: "Opportunities | Digital Thummapala" },
-      { name: "description", content: "Jobs, scholarships, internships and training opportunities are coming soon to Digital Thummapala." },
-      { property: "og:title", content: "Opportunities | Digital Thummapala" },
-      { property: "og:description", content: "Jobs, scholarships, internships and training opportunities are coming soon to Digital Thummapala." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  head: () => getPageSeo({
+    path: "/opportunities",
+    title: "Opportunities in Thummapala | Digital Thummapala",
+    description:
+      "Learn about future jobs, scholarships, internships and training opportunities in Thummapala; current concepts are clearly marked as coming soon.",
   }),
   component: OpportunitiesPage,
 });

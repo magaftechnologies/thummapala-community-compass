@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Add a Sitemap: line after VITE_SITE_URL is configured with the final domain.

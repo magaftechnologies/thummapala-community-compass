@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InnerPage } from "@/components/village/experience";
+import { getPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/our-village")({
-  head: () => ({
-    meta: [
-      { title: "Our Village | Thummapala" },
-      { name: "description", content: "Learn about Thummapala in Anakapalli — its people, farms, schools and community spirit." },
-      { property: "og:title", content: "Our Village | Thummapala" },
-      { property: "og:description", content: "Learn about Thummapala in Anakapalli — its people, farms, schools and community spirit." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  head: () => getPageSeo({
+    path: "/our-village",
+    title: "About Thummapala Village | Digital Thummapala",
+    description:
+      "Learn about Thummapala village in Anakapalli Mandal, Anakapalli District, Andhra Pradesh — its people, agriculture, education, sports and community.",
   }),
   component: OurVillagePage,
 });

@@ -11,6 +11,7 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { getSiteUrl } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -81,6 +82,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Digital Thummapala — a digital platform for Thummapala village, connecting its people, education, agriculture, sports, opportunities, events and future initiatives.",
       },
       { name: "author", content: "Digital Thummapala" },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { property: "og:locale", content: "en_IN" },
+      { property: "og:site_name", content: "Digital Thummapala" },
       { property: "og:title", content: "Digital Thummapala | Thummapala — Our Village. Our People. Our Future." },
       {
         property: "og:description",
@@ -114,12 +118,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const siteUrl = getSiteUrl();
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Digital Thummapala",
+    description: "A digital information website about Thummapala village in Anakapalli, Andhra Pradesh.",
+    inLanguage: ["en-IN", "te-IN"],
+    ...(siteUrl ? { url: `${siteUrl}/` } : {}),
+    about: {
+      "@type": "Place",
+      name: "Thummapala",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Thummapala",
+        addressRegion: "Andhra Pradesh",
+        addressCountry: "IN",
+      },
+    },
+  };
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         {children}
         <Scripts />
       </body>

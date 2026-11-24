@@ -3,6 +3,7 @@ import { createRouter, rootRouteId } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 import { routeTree } from "@/routeTree.gen";
 import { focusAreas, heroSlides, innerPaths } from "@/lib/village-data";
+import { getPageSeo } from "@/lib/seo";
 
 const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 const required = ["/our-village", "/education", "/agrotech", "/sports", "/library", "/opportunities", "/events", "/activities", "/stories", "/gallery", "/contact"];
@@ -30,7 +31,31 @@ describe("Site pages", () => {
       ["Education", heroImageByTitle.get("Education")],
       ["Agrotech", heroImageByTitle.get("Agrotech")],
       ["Sports", heroImageByTitle.get("Sports")],
-      ["Library", heroImageByTitle.get("Thummapala Library")],
+      ["Library", "/images/thummapala-library-community-celebration.png"],
     ]);
+  });
+  it("provides unique page titles and crawl metadata for every public route", () => {
+    const pages = [
+      ["/", "Digital Thummapala"],
+      ["/our-village", "About Thummapala Village"],
+      ["/education", "Education in Thummapala"],
+      ["/agrotech", "Agriculture & Agrotech in Thummapala"],
+      ["/sports", "Sports in Thummapala"],
+      ["/library", "Thummapala Library"],
+      ["/opportunities", "Opportunities in Thummapala"],
+      ["/events", "Events in Thummapala"],
+      ["/activities", "Activities in Thummapala"],
+      ["/stories", "Thummapala Success Stories"],
+      ["/gallery", "Thummapala Village Gallery"],
+      ["/contact", "Contact Digital Thummapala"],
+    ] as const;
+    const titles = pages.map(([path, prefix]) =>
+      getPageSeo({
+        path,
+        title: `${prefix} | Digital Thummapala`,
+        description: `SEO description for ${path}`,
+      }).meta.find((meta) => "title" in meta)?.title,
+    );
+    expect(new Set(titles).size).toBe(pages.length);
   });
 });

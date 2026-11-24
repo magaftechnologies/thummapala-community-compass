@@ -387,6 +387,7 @@ img { display: block; max-width: 100%; }
 .enquiry-layout { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4); align-items: start; }
 .enquiry-intro { grid-column: 1 / span 5; }
 .enquiry-form { grid-column: 7 / span 6; min-width: 0; }
+.enquiry-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .enquiry-mark { display: block; margin-top: var(--s-5); color: var(--sunrise); }
 .enquiry-mark svg { width: 56px; height: 56px; }
 .enquiry-form-heading { display: flex; justify-content: space-between; gap: var(--s-2); padding-bottom: var(--s-2); border-bottom: 1px solid var(--line-dark); font-size: var(--t-caption); letter-spacing: 1px; color: var(--sunrise); }
@@ -404,6 +405,10 @@ img { display: block; max-width: 100%; }
 .enquiry-error { font-size: var(--t-small); color: var(--sunrise); }
 .enquiry-submit-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding-top: var(--s-3); border-top: 1px solid var(--line-dark); }
 .enquiry-submit-row p { max-width: 36ch; font-size: var(--t-caption); line-height: 1.6; color: var(--on-dark-muted); }
+.enquiry-actions { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+.enquiry-actions p { max-width: 36ch; }
+.enquiry-whatsapp { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--sunrise); font-size: var(--t-small); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.enquiry-api-error { margin-top: var(--s-2); color: var(--sunrise); font-size: var(--t-small); line-height: 1.6; }
 .enquiry-submit { height: 48px; padding-inline: 24px; border-radius: 999px; background: var(--sunrise); color: var(--forest-night); font-weight: 700; flex-shrink: 0; }
 .enquiry-success { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 380px; }
 .enquiry-success-icon { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: var(--s-3); border: 1px solid var(--sunrise); border-radius: 50%; color: var(--sunrise); }
@@ -467,6 +472,7 @@ img { display: block; max-width: 100%; }
   :root { --nav-h: 64px; }
   .brand strong { font-size: 13px; }
   .brand small { font-size: 9px; }
+  .nav-actions > .language-toggle { display: none; }
   .hero { min-height: auto; }
   .hero-body { padding-top: calc(var(--nav-h) + 48px); }
   .hero-actions > * { flex: 1 1 100%; }

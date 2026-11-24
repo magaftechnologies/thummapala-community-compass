@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InnerPage } from "@/components/village/experience";
+import { getPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/education")({
-  head: () => ({
-    meta: [
-      { title: "Education | Thummapala" },
-      { name: "description", content: "School support, extra learning, digital skills and career guidance for Thummapala students." },
-      { property: "og:title", content: "Education | Thummapala" },
-      { property: "og:description", content: "School support, extra learning, digital skills and career guidance for Thummapala students." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  head: () => getPageSeo({
+    path: "/education",
+    title: "Education in Thummapala | Digital Thummapala",
+    description:
+      "Explore education in Thummapala, including Thummapala High School, school support, extra learning, digital skills and community career guidance concepts.",
   }),
   component: EducationPage,
 });

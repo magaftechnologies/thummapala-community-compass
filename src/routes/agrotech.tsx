@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InnerPage } from "@/components/village/experience";
+import { getPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/agrotech")({
-  head: () => ({
-    meta: [
-      { title: "Agrotech | Thummapala" },
-      { name: "description", content: "Better ideas for better farming — agriculture learning and technology in Thummapala." },
-      { property: "og:title", content: "Agrotech | Thummapala" },
-      { property: "og:description", content: "Better ideas for better farming — agriculture learning and technology in Thummapala." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  head: () => getPageSeo({
+    path: "/agrotech",
+    title: "Agriculture & Agrotech in Thummapala | Digital Thummapala",
+    description:
+      "Discover Thummapala agriculture and farming ideas, farmer knowledge and agrotech concepts rooted in the village and its land.",
   }),
   component: AgrotechPage,
 });

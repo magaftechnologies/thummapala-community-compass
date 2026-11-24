@@ -78,13 +78,13 @@ describe("Village content safeguards", () => {
   });
   it("keeps impact profiles and the configurable video placeholder ready", () => {
     expect(impactPeople.map((person) => [person.name.en, person.role.en])).toEqual([
-      ["Dantuluri V. V. Gopala Raju Garu", "Site donor · High school; roads and cement roads"],
+      ["Dantuluri V V Gopala Raju Garu", "Site donor · High school, roads and cement roads"],
       ["Peela veeru Naidu", "Physical Education Teacher · P.T. Sir"],
       ["Adari Govindarao", "School Support · Education Support"],
       ["Patakamsetti Balaram", "Chairman"],
       ["Ajay Kamadhenu", "Digital Marketer & Digital Creator"],
     ]);
-    expect(impactPeople[0]?.name.te).toBe("దంతులూరి V. V. గోపాల రాజు గారు");
+    expect(impactPeople[0]?.name.te).toBe("దంతులూరి V V గోపాల రాజు గారు");
     expect(impactPeople[0]?.image).toBe("/images/thummapala-impact-dantuluri-vv-gopala-raju.jpeg");
     expect(impactPeople.every((person) => person.alt.en.length > 0 && person.alt.te.length > 0)).toBe(true);
     expect(impactVideoUrl).toContain("YOUR_VIDEO_ID");
@@ -190,7 +190,7 @@ describe("Village content safeguards", () => {
     expect(events.every((event) => event.image.startsWith("/images/") && event.alt.en.length > 0)).toBe(true);
   });
   it("provides the requested content minimums", () => {
-    expect(heroSlides.length).toBe(6);
+    expect(heroSlides.length).toBe(5);
     expect(programs.length).toBeGreaterThanOrEqual(6);
     expect(mentors.length).toBe(4);
     expect(stories.length).toBe(6);
@@ -246,13 +246,6 @@ describe("Village content safeguards", () => {
         alt: "Sugar factory and sugarcane transport near Thummapala",
         mobilePosition: undefined,
       },
-      {
-        image: "/images/thummapala-library-community-celebration.png",
-        title: "Thummapala Library",
-        subtitle: "A place to read, learn and grow.",
-        alt: "Children and community members gathered with books at a Thummapala library celebration",
-        mobilePosition: undefined,
-      },
     ]);
   });
   it("requires a full name before accepting an enquiry", () => {
@@ -270,11 +263,14 @@ describe("Village content safeguards", () => {
   it("requires a valid email address before accepting an enquiry", () => {
     expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "not-an-email", audience: "Student", interest: "Education", message: "Hello" }).email).toBe("email");
   });
-  it("requires an audience selection before accepting an enquiry", () => {
-    expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "person@example.com", audience: "", interest: "Education", message: "Hello" }).audience).toBe("required");
+  it("allows email to remain blank", () => {
+    expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "", audience: "Student", interest: "Education", message: "Hello" }).email).toBeUndefined();
   });
-  it("requires an interest selection before accepting an enquiry", () => {
-    expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "person@example.com", audience: "Student", interest: "", message: "Hello" }).interest).toBe("required");
+  it("allows the optional audience selection to be blank", () => {
+    expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "person@example.com", audience: "", interest: "Education", message: "Hello" }).audience).toBeUndefined();
+  });
+  it("allows the optional interest selection to be blank", () => {
+    expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "person@example.com", audience: "Student", interest: "", message: "Hello" }).interest).toBeUndefined();
   });
   it("requires a message before accepting an enquiry", () => {
     expect(validateEnquiry({ name: "Asha", phone: "12345678", email: "person@example.com", audience: "Student", interest: "Education", message: "  " }).message).toBe("required");

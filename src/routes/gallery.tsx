@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InnerPage } from "@/components/village/experience";
+import { getPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/gallery")({
-  head: () => ({
-    meta: [
-      { title: "Gallery | Thummapala" },
-      { name: "description", content: "A few moments from Thummapala — village, learning, farms and sports." },
-      { property: "og:title", content: "Gallery | Thummapala" },
-      { property: "og:description", content: "A few moments from Thummapala — village, learning, farms and sports." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  head: () => getPageSeo({
+    path: "/gallery",
+    title: "Thummapala Village Gallery | Digital Thummapala",
+    description:
+      "View the Thummapala village gallery: community life, education, agriculture, sports, people and Library Week photographs.",
   }),
   component: GalleryPage,
 });

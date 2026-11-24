@@ -30,6 +30,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { validateEnquiry, type EnquiryField, type EnquiryIssue, type EnquiryValues } from "@/lib/enquiry-validation";
+import { getWhatsAppUrl, web3FormsAccessKey } from "@/lib/contact-config";
+import { getSiteUrl } from "@/lib/seo";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   images,
@@ -156,6 +158,9 @@ function Navbar({
               variant="editorial"
               className="menu-toggle"
               aria-label={t(c("Open menu", "మెనూ తెరవండి"))}
+              aria-haspopup="dialog"
+              aria-expanded={menu}
+              aria-controls="mobile-navigation"
               onClick={() => setMenu(true)}
             >
               <Menu />
@@ -164,7 +169,7 @@ function Navbar({
         </div>
       </header>
       <Dialog open={menu} onOpenChange={setMenu}>
-        <DialogContent className="mobile-menu">
+        <DialogContent className="mobile-menu" id="mobile-navigation">
           <DialogTitle className="sr-only">{t(c("Village navigation", "గ్రామం మెనూ"))}</DialogTitle>
           <DialogDescription className="sr-only">
             {t(c("Explore Thummapala", "తుమ్మపాలను చూడండి"))}
@@ -1458,8 +1463,10 @@ function Enquiry({ t }: { t: Translate }) {
   const [errors, setErrors] = useState<Partial<Record<EnquiryField, EnquiryIssue>>>({});
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [submissionError, setSubmissionError] = useState("");
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (sending) return;
     const form = event.currentTarget;
     const fields = new FormData(form);
     const name = String(fields.get("name") ?? "").trim();
@@ -1471,16 +1478,54 @@ function Enquiry({ t }: { t: Translate }) {
     const values: EnquiryValues = { name, phone, email, audience, interest, message };
     const nextErrors = validateEnquiry(values);
     setErrors(nextErrors);
+    setSubmissionError("");
     if (Object.keys(nextErrors).length > 0) return;
     setSending(true);
-    window.setTimeout(() => {
-      setSending(false);
+    try {
+      if (!web3FormsAccessKey) {
+        throw new Error("VITE_WEB3FORMS_ACCESS_KEY is not configured");
+      }
+      const payload = {
+        access_key: web3FormsAccessKey,
+        subject: "New Enquiry — Digital Thummapala",
+        from_name: name,
+        name,
+        phone,
+        email,
+        enquiry_type: interest,
+        audience,
+        message,
+        botcheck: String(fields.get("botcheck") ?? ""),
+      };
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json().catch(() => null) as { success?: boolean; message?: string } | null;
+      if (!response.ok || !result?.success) {
+        console.error("Web3Forms submission failed", { status: response.status, result });
+        throw new Error("Web3Forms submission failed");
+      }
+      form.reset();
       setSubmitted(true);
-    }, 450);
+    } catch (error) {
+      console.error("Digital Thummapala enquiry submission error", error);
+      setSubmissionError(t(c(
+        "Something went wrong. Please try again or contact us on WhatsApp.",
+        "ఏదో సమస్య ఉంది. మళ్లీ ప్రయత్నించండి లేదా WhatsApp ద్వారా సంప్రదించండి.",
+      )));
+    } finally {
+      setSending(false);
+    }
   };
   const reset = () => {
     formRef.current?.reset();
     setErrors({});
+    setSubmissionError("");
     setSubmitted(false);
   };
   const errorText = (issue: EnquiryIssue | undefined) => {
@@ -1489,6 +1534,10 @@ function Enquiry({ t }: { t: Translate }) {
     if (issue === "email") return t(c("Enter a valid email address.", "సరైన ఇమెయిల్ చిరునామా నమోదు చేయండి."));
     return "";
   };
+  const whatsappUrl = getWhatsAppUrl(t(c(
+    "Hello Digital Thummapala, I would like to make an enquiry.",
+    "నమస్కారం Digital Thummapala, నేను ఒక ప్రశ్న అడగాలనుకుంటున్నాను.",
+  )));
   return (
     <section id="contact" className="section enquiry-section">
       <div className="container-wide enquiry-layout">
@@ -1499,19 +1548,20 @@ function Enquiry({ t }: { t: Translate }) {
           <span className="enquiry-mark" aria-hidden="true"><Sprout strokeWidth={1} /></span>
         </div>
         <form className="enquiry-form" ref={formRef} onSubmit={submit} noValidate>
+          <input className="enquiry-honeypot" type="text" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" />
           {submitted ? (
             <div className="enquiry-success" role="status" aria-live="polite">
               <span className="enquiry-success-icon"><ArrowUpRight /></span>
               <p className="eyebrow">{t(c("THANK YOU FOR CONNECTING", "మాతో కలిసినందుకు ధన్యవాదాలు"))}</p>
-              <h3>{t(c("Your message is ready.", "మీ సందేశం సిద్ధంగా ఉంది."))}</h3>
-              <p>{t(c("This is a front-end preview, so your enquiry has not been sent or saved. A live contact service can be connected after review.", "ఇది వెబ్‌సైట్ నమూనా మాత్రమే. మీ సందేశం పంపబడలేదు లేదా భద్రపరచబడలేదు. సమీక్ష తర్వాత నిజమైన సంప్రదింపు సేవను అనుసంధానించవచ్చు."))}</p>
+              <h3>{t(c("Your enquiry has been sent successfully.", "మీ సందేశం విజయవంతంగా పంపబడింది."))}</h3>
+              <p>{t(c("Thank you! We appreciate you contacting Digital Thummapala.", "ధన్యవాదాలు! Digital Thummapalaను సంప్రదించినందుకు మేము అభినందిస్తున్నాం."))}</p>
               <Button type="button" variant="editorial" className="enquiry-reset" onClick={reset}>{t(c("Send another message", "మరో సందేశం పంపండి"))}<ArrowRight /></Button>
             </div>
           ) : (
             <>
               <div className="enquiry-form-heading">
                 <span>01 — {t(c("YOUR DETAILS", "మీ వివరాలు"))}</span>
-                <span>{t(c("All fields required", "అన్ని వివరాలు తప్పనిసరి"))}</span>
+                <span>{t(c("Name, phone and message required", "పేరు, ఫోన్, సందేశం తప్పనిసరి"))}</span>
               </div>
               <div className="enquiry-fields">
                 <div className="enquiry-field">
@@ -1525,36 +1575,45 @@ function Enquiry({ t }: { t: Translate }) {
                   {errors.phone && <span className="enquiry-error" id="enquiry-phone-error">{errorText(errors.phone)}</span>}
                 </div>
                 <div className="enquiry-field enquiry-field-wide">
-                  <Label htmlFor="enquiry-email">{t(c("Email address", "ఇమెయిల్ చిరునామా"))}</Label>
-                  <Input id="enquiry-email" name="email" type="email" autoComplete="email" required aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "enquiry-email-error" : undefined} placeholder={t(c("you@example.com", "you@example.com"))} />
+                  <Label htmlFor="enquiry-email">{t(c("Email address (optional)", "ఇమెయిల్ చిరునామా (ఐచ్ఛికం)"))}</Label>
+                  <Input id="enquiry-email" name="email" type="email" autoComplete="email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "enquiry-email-error" : undefined} placeholder={t(c("you@example.com", "you@example.com"))} />
                   {errors.email && <span className="enquiry-error" id="enquiry-email-error">{errorText(errors.email)}</span>}
                 </div>
                 <div className="enquiry-field">
                   <Label htmlFor="enquiry-audience">{t(c("I am a…", "నేను…"))}</Label>
-                  <select className="enquiry-select" id="enquiry-audience" name="audience" required defaultValue="">
+                  <select className="enquiry-select" id="enquiry-audience" name="audience" defaultValue="" aria-invalid={Boolean(errors.audience)} aria-describedby={errors.audience ? "enquiry-audience-error" : undefined}>
                     <option value="" disabled>{t(c("Choose one", "ఒకటి ఎంచుకోండి"))}</option>
                     {[c("Student", "విద్యార్థి"), c("Parent", "తల్లిదండ్రులు"), c("Farmer", "రైతు"), c("Player", "క్రీడాకారుడు"), c("Mentor", "మార్గదర్శి"), c("Volunteer", "వాలంటీర్"), c("Community member", "కమ్యూనిటీ సభ్యుడు"), c("Other", "ఇతరులు")].map((option) => <option value={option.en} key={option.en}>{t(option)}</option>)}
                   </select>
-                  {errors.audience && <span className="enquiry-error">{errorText(errors.audience)}</span>}
+                  {errors.audience && <span className="enquiry-error" id="enquiry-audience-error">{errorText(errors.audience)}</span>}
                 </div>
                 <div className="enquiry-field">
                   <Label htmlFor="enquiry-interest">{t(c("Interested in…", "ఆసక్తి ఉన్నది…"))}</Label>
-                  <select className="enquiry-select" id="enquiry-interest" name="interest" required defaultValue="">
+                  <select className="enquiry-select" id="enquiry-interest" name="interest" defaultValue="" aria-invalid={Boolean(errors.interest)} aria-describedby={errors.interest ? "enquiry-interest-error" : undefined}>
                     <option value="" disabled>{t(c("Choose a topic", "విషయం ఎంచుకోండి"))}</option>
                     {[c("Education", "చదువు"), c("Career", "ఉద్యోగం"), c("Agriculture", "వ్యవసాయం"), c("Sports", "క్రీడలు"), c("Training", "శిక్షణ"), c("Community programmes", "కమ్యూనిటీ కార్యక్రమాలు"), c("Other", "ఇతర అంశం")].map((option) => <option value={option.en} key={option.en}>{t(option)}</option>)}
                   </select>
-                  {errors.interest && <span className="enquiry-error">{errorText(errors.interest)}</span>}
+                  {errors.interest && <span className="enquiry-error" id="enquiry-interest-error">{errorText(errors.interest)}</span>}
                 </div>
                 <div className="enquiry-field enquiry-field-wide">
                   <Label htmlFor="enquiry-message">{t(c("Your message", "మీ సందేశం"))}</Label>
-                  <Textarea id="enquiry-message" name="message" required rows={3} aria-invalid={Boolean(errors.message)} placeholder={t(c("How would you like to be involved?", "మీరు ఎలా భాగస్వాములు కావాలనుకుంటున్నారు?"))} />
-                  {errors.message && <span className="enquiry-error">{errorText(errors.message)}</span>}
+                  <Textarea id="enquiry-message" name="message" required rows={3} aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? "enquiry-message-error" : undefined} placeholder={t(c("How would you like to be involved?", "మీరు ఎలా భాగస్వాములు కావాలనుకుంటున్నారు?"))} />
+                  {errors.message && <span className="enquiry-error" id="enquiry-message-error">{errorText(errors.message)}</span>}
                 </div>
               </div>
               <div className="enquiry-submit-row">
-                <p>{t(c("Front-end preview · Messages are not transmitted or stored.", "వెబ్‌సైట్ నమూనా · సందేశాలు పంపబడవు లేదా భద్రపరచబడవు."))}</p>
-                <Button type="submit" className="enquiry-submit" disabled={sending}>{sending ? t(c("Preparing…", "సిద్ధం చేస్తున్నాం…")) : t(c("Send enquiry", "సందేశం పంపండి"))}<ArrowUpRight /></Button>
+                <div className="enquiry-actions">
+                  <p>{t(c("Your details are used only to respond to this enquiry.", "ఈ సందేశానికి స్పందించడానికి మాత్రమే మీ వివరాలు ఉపయోగిస్తాం."))}</p>
+                  {whatsappUrl && (
+                    <a className="enquiry-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label={t(c("Chat with Digital Thummapala on WhatsApp", "WhatsAppలో Digital Thummapalaతో మాటామంతీ"))}>
+                      <span>{t(c("Chat on WhatsApp", "WhatsAppలో మాట్లాడండి"))}</span>
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </a>
+                  )}
+                </div>
+                <Button type="submit" className="enquiry-submit" disabled={sending} aria-busy={sending}>{sending ? t(c("Sending…", "పంపిస్తున్నాం…")) : t(c("Send enquiry", "సందేశం పంపండి"))}<ArrowUpRight /></Button>
               </div>
+              {submissionError && <p className="enquiry-api-error" role="alert">{submissionError}</p>}
             </>
           )}
         </form>
@@ -2135,8 +2194,20 @@ export function VillageExperience() {
 }
 function PageHero({ page, t }: { page: PageKey; t: Translate }) {
   const info = pageIntros[page];
+  const siteUrl = getSiteUrl();
+  const pagePath = page === "contact" ? "/contact" : `/${page}`;
+  const absolute = (path: string) => siteUrl ? `${siteUrl}${path}` : path;
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t(c("Home", "హోమ్")), item: absolute("/") },
+      { "@type": "ListItem", position: 2, name: t(info.title), item: absolute(pagePath) },
+    ],
+  };
   return (
     <section id="home" className="page-hero" data-page={page}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <img
         className="page-hero-photo"
         src={info.heroImageUrl ?? images[info.image]}

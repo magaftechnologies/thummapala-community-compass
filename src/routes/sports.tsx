@@ -1,16 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InnerPage } from "@/components/village/experience";
+import { getPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/sports")({
-  head: () => ({
-    meta: [
-      { title: "Sports | Thummapala" },
-      { name: "description", content: "Kho-Kho and village sports in Thummapala — play, compete and grow." },
-      { property: "og:title", content: "Sports | Thummapala" },
-      { property: "og:description", content: "Kho-Kho and village sports in Thummapala — play, compete and grow." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  head: () => getPageSeo({
+    path: "/sports",
+    title: "Sports in Thummapala | Digital Thummapala",
+    description:
+      "Discover sports in Thummapala, including Kho-Kho, village sporting talent, teamwork and community youth activities.",
   }),
   component: SportsPage,
 });
