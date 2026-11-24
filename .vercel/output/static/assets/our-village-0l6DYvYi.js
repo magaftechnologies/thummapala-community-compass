@@ -1,1 +1,0 @@
-import{n as e}from"./index-Dm29Awb8.js";import{t}from"./experience-CNui0DSx.js";var n=e();function r(){return(0,n.jsx)(t,{page:`our-village`})}export{r as component};
